@@ -88,3 +88,8 @@ Until these findings are fixed, keep PR #1 draft and do not deploy the API or me
 - [`apps/api/README.md`](apps/api/README.md) — API environment and contracts.
 
 No Antigravity use is authorized. Do not claim production readiness, live OTP, real-device authentication, or milestone acceptance without new evidence.
+
+
+## Push confirmation
+
+The M2 source and initial handoff/history update are on the remote feature branch in commit `20de3d934aa02e29ab54df0e204cd2695d2a4dc2`. PR #1 is **open and Draft** against `fresh-rebuild`; the PR title/body describe the scope and blockers. GitHub Actions run [38084269538](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38084269538) was still **in progress** for that source commit at the last check. Do not infer success; inspect the latest run on the branch when resuming. The current source commit was pushed without force, and `fresh-rebuild` was not changed.
