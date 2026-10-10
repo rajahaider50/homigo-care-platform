@@ -171,3 +171,8 @@ The full ordered handoff, exact source paths, SDK command, security fixes, and a
 ### Push confirmation — 2026-10-11
 
 The M2 source and initial handoff/history update were pushed to `fix/android-auth-registration-flow` as commit `20de3d934aa02e29ab54df0e204cd2695d2a4dc2`. PR #1 remains open and is Draft, retitled `M2: auth and booking slice (security follow-up required)`; its body records the security blockers and verification limits. GitHub Actions run [38084269538](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38084269538) was **in progress** for commit `20de3d9` at the last check; do not infer its result. A later documentation-only commit may trigger a newer run, so inspect the latest checks before continuing. The push was non-force; `fresh-rebuild` was not changed.
+
+
+### CI completion update — 2026-10-11
+
+Run [38084269538](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38084269538) for source commit `20de3d934aa02e29ab54df0e204cd2695d2a4dc2` completed with overall conclusion **success**. The Web job passed Firestore Emulator, Public Website, and Admin checks. The Android job validated the Firebase config, but the registered debug-keystore secret `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` was unavailable; therefore Android SDK setup, native lint/unit/build, signer verification, and APK upload were skipped. This run produced no Android artifact and is not evidence of an Android CI build or device test.

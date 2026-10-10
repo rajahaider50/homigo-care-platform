@@ -93,3 +93,8 @@ No Antigravity use is authorized. Do not claim production readiness, live OTP, r
 ## Push confirmation
 
 The M2 source and initial handoff/history update are on the remote feature branch in commit `20de3d934aa02e29ab54df0e204cd2695d2a4dc2`. PR #1 is **open and Draft** against `fresh-rebuild`; the PR title/body describe the scope and blockers. GitHub Actions run [38084269538](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38084269538) was still **in progress** for that source commit at the last check. Do not infer success; inspect the latest run on the branch when resuming. The current source commit was pushed without force, and `fresh-rebuild` was not changed.
+
+
+## CI completion update
+
+Follow-up to the in-progress note above: GitHub Actions run [38084269538](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38084269538) completed with overall conclusion **success** for source commit `20de3d934aa02e29ab54df0e204cd2695d2a4dc2`. The Web job passed Firestore Emulator, Public Website, and Admin checks. The Android job validated the Firebase config but reported the registered development-key secret `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` unavailable; its Android SDK setup, native lint/unit/build, APK certificate verification, and upload steps were skipped. No Android CI APK artifact was created. This does not replace the local Android SDK/device validation still required.
