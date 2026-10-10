@@ -30,7 +30,7 @@ The debug SHA-1/SHA-256 were registered on the previous development Android app,
 
 ## Firebase development project
 
-The local CLI context in `firebase/.firebaserc` targets the newly created development project `homigo-care-dev-20261010`; the production alias remains `homigo-care-76e21`. The new project is on Firebase Spark, with Analytics and Gemini disabled. Its Firestore database has not been created because the region is permanent and is awaiting owner selection. Existing Firebase projects remain untouched. The Firestore schema starts with a verified user's private `profiles/{uid}` record; all other collections deny by default until their phase-specific rules are implemented. Rules are validated before deployment. The exact rule payload will be reviewed before applying any permission change. No database reset or fake account seeding is allowed.
+The local CLI context in `firebase/.firebaserc` targets the development project `homigo-care-dev-20261010`; the production alias remains `homigo-care-76e21`. The new project is on Firebase Spark, with Analytics and Gemini disabled. Its default Firestore database is active in Standard (Native) edition in `asia-southeast1` (Singapore). It was created in production mode with `allow read, write: if false;`, so client access stays denied until the repository's profile-aware rules are reviewed and deployed. No documents or user data have been written. Scheduled backups are disabled; enabling them requires the Blaze pay-as-you-go plan. Existing Firebase projects remain untouched. The exact rule payload will be reviewed before applying any permission change. No database reset or fake account seeding is allowed.
 
 ## Web environment
 
