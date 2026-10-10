@@ -45,6 +45,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pk.homigocare.android.auth.AuthFormValidator
+import pk.homigocare.android.auth.AuthFlowPolicy
 import pk.homigocare.android.auth.AuthRepository
 import pk.homigocare.android.auth.AuthScreen
 import pk.homigocare.android.auth.EmailNotVerifiedException
@@ -107,12 +108,22 @@ class MainActivity : ComponentActivity() {
                     result.fold(
                         onSuccess = { user ->
                             password = ""
-                            message = null
-                            messageIsError = false
-                            pendingVerification = null
-                            patientProfile = null
-                            profileLoading = true
-                            currentUser = user
+                            if (AuthFlowPolicy.shouldRouteToVerificationAfterRegistration(signUp, user.isEmailVerified)) {
+                                currentUser = null
+                                pendingVerification = user
+                                patientProfile = null
+                                profileLoading = false
+                                profileError = null
+                                message = "Account created. Verify your email to continue. You can resend the link below."
+                                messageIsError = false
+                            } else {
+                                message = null
+                                messageIsError = false
+                                pendingVerification = null
+                                patientProfile = null
+                                profileLoading = true
+                                currentUser = user
+                            }
                         },
                         onFailure = { error ->
                             val session = auth.currentUser()
@@ -212,7 +223,12 @@ class MainActivity : ComponentActivity() {
                         onGoogleSignIn = {
                             loading = true
                             message = null
-                            val serverClientId = getString(R.string.default_web_client_id)
+                            // A missing/incorrect Firebase Google OAuth resource must produce a
+                            // recoverable UI error, not crash the Activity from the click handler.
+                            val serverClientId = runCatching { getString(R.string.default_web_client_id) }
+                                .getOrNull()
+                                .orEmpty()
+                                .trim()
                             if (serverClientId.isBlank()) {
                                 loading = false
                                 message = "Google sign-in is not configured in this build. Refresh the Firebase Android configuration and rebuild."
