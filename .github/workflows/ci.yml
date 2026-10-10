@@ -25,6 +25,11 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - name: Set up Java 21 for the Firestore Emulator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile
       - name: Verify Firestore rules against the Emulator
@@ -54,8 +59,6 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: gradle
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
       - name: Restore ignored Firebase Android config
         id: firebase-config
         env:
@@ -67,6 +70,11 @@ jobs:
           fi
           printf '%s' "$GOOGLE_SERVICES_JSON" > apps/android/app/google-services.json
           echo "available=true" >> "$GITHUB_OUTPUT"
+      - name: Set up Android SDK
+        if: steps.firebase-config.outputs.available == 'true'
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
       - name: Verify native app
         if: steps.firebase-config.outputs.available == 'true'
         working-directory: apps/android
