@@ -10,7 +10,7 @@ HomiGo Care is a minimalist home-healthcare MVP centered on **Convenience + Priv
 - `apps/public-web`: separate React/Vite client for the public home/service overview and auth entry/action handler. Firebase client uses the same project; client permissions remain rules-enforced.
 - `apps/admin-web`: separate React/Vite client; sign-in only, no public registration. A user must hold a Firebase `admin` custom claim before any privileged query. Initial account bootstrap awaits an owner-provided email.
 - `packages/design-system`: original Android vectors, SVG icons, PNG logos and design token source.
-- `firebase`: the existing development project's Firestore config/rules; no Hosting, Storage, Supabase or second database.
+- `firebase`: the new development project's Firestore config/rules; no Hosting, Storage, Supabase or second database.
 - `tests/firestore`: local isolated rules tests; synthetic test identities only in the emulator, never in the shared Firebase project.
 
 ## Data and security

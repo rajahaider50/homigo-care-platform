@@ -16,7 +16,9 @@ The development Android app uses separate keys from production to avoid Firebase
 - Dev Release SHA-1: `DF:8B:ED:09:D6:AE:7E:A4:25:45:E3:59:1F:22:0A:9C:9F:1F:92:50`
 - Dev Release SHA-256: `08:25:65:E9:68:35:87:DC:CA:6A:FA:10:C2:21:C3:D2:34:82:06:A4:6E:17:F1:B9:2A:88:E4:7A:9F:24:EA:5F`
 
-All four fingerprints below were registered on the previous development Android app (`homigo-care-dev-76e21`). The new project (`homigo-care-dev-20261010`) still needs its Android app registration and fingerprint setup before Android sign-in can be tested there.
+All four fingerprints above remain registered on the previous development Android app (`homigo-care-dev-76e21`). The current project now has the Android app `HomiGo Care Android` registered (app ID `1:835894740292:android:85ef8ad75baeaf4ca7c311`), but no fingerprints are registered on it. Firebase warned that reusing the existing debug SHA-1/package pair would collide with an OAuth 2.0 client in another project and that Google API calls signed with it may fail. I removed only the just-added fingerprint; the previous development and production projects remain unchanged. Resolve the signing/OAuth conflict before enabling Android Google sign-in.
+
+The current project's `google-services.json` was downloaded but not committed. Writing `FIREBASE_ANDROID_GOOGLE_SERVICES_JSON` to GitHub Actions failed with HTTP 403 (`Resource not accessible by integration`); no secret was written or overwritten. The workflow's Android SDK and native verification steps were therefore skipped. Do not paste config contents into chat or commit them.
 
 ## Media storage
 

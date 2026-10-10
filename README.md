@@ -26,7 +26,7 @@ A fresh, privacy-first MVP implementation with a native Android application and 
 
 4. Install the generated debug APK with Android Studio or `adb install -r app/build/outputs/apk/debug/app-debug.apk`.
 
-The debug SHA-1/SHA-256 were registered on the previous development Android app, not on the new project yet. Register the `pk.homigocare.android` app and its fingerprints on the new development project before expecting Android sign-in to work. A separately signed release build still needs an owner-controlled release keystore; never send that key/password in chat.
+The new development project now has Android (`pk.homigocare.android`) and shared Web app registrations. The Android app currently has no SHA fingerprints: Firebase warned that the existing development debug SHA-1/package pair already belongs to an OAuth 2.0 client in another project and that Google API calls using it may fail. The fingerprint added during investigation was removed; resolve the collision with an owner-approved signing plan before expecting Android Google sign-in to work. The downloaded Android client config remains uncommitted. GitHub rejected the attempt to set `FIREBASE_ANDROID_GOOGLE_SERVICES_JSON` with HTTP 403, so native Android CI steps are skipped. A separately signed release build still needs an owner-controlled release keystore; never send that key/password in chat.
 
 ## Firebase development project
 
@@ -34,7 +34,7 @@ The local CLI context in `firebase/.firebaserc` targets the development project 
 
 ## Web environment
 
-Each web application will use the same Firebase Web app configuration via environment variables. Copy `.env.example` to each app's `.env.local` after the M1 web projects are created. Public Firebase client configuration is not authorization; Firestore rules enforce access. Server-only Cloudinary credentials must stay in Vercel encrypted environment variables and must never be added to browser bundles or Git.
+The registered `HomiGo Care Web` Firebase app is shared by the Public and Admin apps. Set its `VITE_FIREBASE_*` values in each app's local/Vercel environment before expecting Firebase auth to work; copy `.env.example` to `.env.local` for local development and do not commit configured values. Public Firebase client configuration is not authorization; Firestore rules enforce access. Server-only Cloudinary credentials must stay in Vercel encrypted environment variables and must never be added to browser bundles or Git.
 
 ## Milestone gates
 
