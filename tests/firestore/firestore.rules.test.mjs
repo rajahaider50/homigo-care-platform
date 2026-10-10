@@ -89,6 +89,15 @@ test("unverified users cannot create profiles and another patient cannot read th
   await assertFails(getDoc(doc(otherPatientDb, "profiles", "patient-a")));
 });
 
+test("unauthenticated users and patients cannot list profile records", async () => {
+  const unauthenticatedDb = testEnvironment.unauthenticatedContext().firestore();
+  await assertFails(getDoc(doc(unauthenticatedDb, "profiles", "patient-a")));
+  await assertFails(getDocs(query(collection(unauthenticatedDb, "profiles"), limit(100))));
+
+  const patientDb = userDb("patient-a");
+  await assertFails(getDocs(query(collection(patientDb, "profiles"), limit(100))));
+});
+
 test("clients cannot self-assign a privileged role or add sensitive/unapproved fields", async () => {
   const db = userDb("patient-new");
   await assertFails(setDoc(
@@ -128,8 +137,18 @@ test("verified Admin claim allows only bounded profile reads and aggregate count
   await assertFails(getDocs(query(collection(db, "profiles"), limit(101))));
 });
 
+test("an unverified Admin claim cannot read or list profiles", async () => {
+  const db = userDb("admin-unverified", { verified: false, admin: true });
+  await assertFails(getDoc(doc(db, "profiles", "patient-a")));
+  await assertFails(getDocs(query(collection(db, "profiles"), limit(100))));
+});
+
 test("all non-profile collections remain default-deny, including for Admin", async () => {
   const db = userDb("admin-test", { admin: true });
   await assertFails(getDocs(collection(db, "bookings_live")));
   await assertFails(getDoc(doc(db, "chat_threads", "synthetic-thread")));
+  for (const collectionName of ["patient_health_records", "health_passports", "payments"]) {
+    await assertFails(getDocs(collection(db, collectionName)));
+    await assertFails(setDoc(doc(db, collectionName, "synthetic-emulator-only"), { value: true }));
+  }
 });

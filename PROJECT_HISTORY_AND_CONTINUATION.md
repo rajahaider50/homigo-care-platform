@@ -21,7 +21,7 @@ The scores below apply only to M1 scope. Four equally weighted gates are used pe
 |---|---:|---|
 | Public Website | **63%** | Route/UI foundation and temporary-preview smoke checks pass (1/4); Web CI checks pass (1/4); auth/action foundation exists but real Firebase runtime is unconfigured (0.5/4); Vercel deployment cannot be verified (0/4). |
 | Admin Panel | **38%** | Shell, claim guard, and bounded query foundation exist but live authorization is untested (0.5/4); Admin CI checks pass (1/4); Firebase bootstrap/runtime and a protected deployment are not verified (0/4 each). |
-| Native Android | **63%** | Native source and Firebase app/signing/OAuth setup are present. CI run `38055840563` passed config validation, Android SDK setup, lint, unit tests, and `assembleDebug`; a private 7-day APK artifact is available. The APK SHA-256 is `c69f646d1756492ec809afe0bb2b429ff0f0337ad064e49e8e4f75e27ad09478`. It uses the runner's default debug key rather than the Firebase-registered development key. Device auth/profile persistence remain unverified. |
+| Native Android | **50%** | Native source, live Google provider/OAuth configuration, and Firebase-registered development fingerprints are verified. CI run `38055840563` built an APK, but its signature is the runner's default key. The workflow now requires the registered key and verifies the APK fingerprints before upload; the required secret write returned 403. Correct-signer Actions artifact and device auth/profile persistence remain unverified. |
 
 These percentages do **not** mean the full product is 38–63% complete. Discovery/booking, Health Passport, SOS, payment review, and final stabilization remain later milestones.
 
@@ -40,7 +40,7 @@ These percentages do **not** mean the full product is 38–63% complete. Discove
   - `tests/firestore` — isolated Firestore Rules Emulator tests.
   - `.github/workflows/ci.yml` — Web/Rules CI plus secret-gated Android CI.
   - `docs/FEATURE_AUDIT.md`, `docs/IMPLEMENTATION_MATRIX.md`, `TODO.md` — current scope and evidence ledgers.
-- CI uses Node 22, pnpm 11.25.0, and Java 21. Web scripts run typecheck, lint, tests, and production builds. Android runs `lint testDebugUnitTest assembleDebug` only when the repository secret is available.
+- CI uses Node 22, pnpm 11.25.0, and Java 21. Web scripts run typecheck, lint, tests, and production builds. Android requires both Firebase config and registered development-keystore secrets, validates key fingerprints, then validates the APK signer before upload.
 
 ## Project history and verified decisions
 
@@ -48,7 +48,7 @@ These percentages do **not** mean the full product is 38–63% complete. Discove
 2. A private monorepo was created/cloned and work continued on its existing `fresh-rebuild` branch. Old repos and projects were preserved.
 3. The user approved the new Firebase development project `homigo-care-dev-20261010` in `asia-southeast1` (Singapore). The project remains on Firebase Spark; Analytics and Gemini are disabled. No billing upgrade or production project mutation was made.
 4. Android (`pk.homigocare.android`) and a shared Web app were registered. A unique development-only debug signing certificate was generated outside Git and registered in Firebase. Google sign-in was enabled; the Android config was refreshed afterward to include OAuth client metadata.
-5. The default Firestore database is Standard (Native), created in production mode with live deny-all rules. Profile-aware repo rules passed 6/6 isolated Emulator tests. Live rules have not been deployed, no records were seeded, and no user data was written.
+5. The default Firestore database is Standard (Native), created in production mode with last-verified deny-all rules. Profile-aware repository rules pass 8/8 isolated Emulator tests. The live Console Rules editor did not render source during the latest check; no rules were deployed, no records were seeded, and no user data was written.
 6. Native Android, Public Website, and Admin foundations were implemented. Public preview smoke checks previously returned HTTP 200 on `/`, `/services`, `/auth`, and `/auth/action`. Admin remains sign-in-only and claim-gated in source; no public Admin registration was added.
 7. CI run [38055840563](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38055840563), on commit `837af9b`, passed Web and Firestore Rules checks plus the expected project/package/OAuth config validation, Android SDK setup, lint, unit tests, `assembleDebug`, and artifact upload. Private 7-day artifact: `homigo-care-debug-apk-837af9b35da552d02214476a4fcef8881ce08a43`. The downloaded APK is 15,371,248 bytes, SHA-256 `c69f646d1756492ec809afe0bb2b429ff0f0337ad064e49e8e4f75e27ad09478`. CI uses the runner's default debug key, not the Firebase-registered development key.
 8. The task was reauthorized and access retried. GitHub repo/branch, push/admin permission, workflow, run, and Actions read access work. Secret listing and a user-authorized stdin-only write attempt returned HTTP 403 (`Resource not accessible by integration`); no value was read or written by this integration. Run `38055840563` validates that the config available to CI matches the expected development project, Android package, and OAuth metadata without printing identifiers. The exact secret remains unreadable through the API.
@@ -79,13 +79,12 @@ The only team visible after reauthorization is `rajahaider50`'s Hobby team, and 
 
 ## Immediate next steps
 
-1. The run [38055840563](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38055840563) passed config validation and native CI; its APK artifact was downloaded and verified. Use the registered development key and an authorized device to finish Google Sign-In/profile testing; the downloaded CI APK uses the runner's default debug key.
-2. Use the registered development keystore for any Google Sign-In device test; the current CI runner defaults to its own debug key. Never ask the user to paste the Firebase config or signing key into chat.
-3. Have the user reauthorize the correct Vercel account/team with the Public and Admin projects. Then verify current project IDs, Git repository linkage, environment keys by name/status only, build logs, deployment state, actual Public URL, and Admin protection.
-4. Configure Email/Password Auth and Web client runtime values in the approved development project and appropriate secure runtime environment; then test real auth/recovery flows.
-5. Verify native APK build, authorized Google sign-in, and owner-only profile persistence without inserting fake/shared test records. Keep the live Firestore rules deny-all until reviewed and approved.
-6. Obtain the initial Admin email through the owner's secure workflow; validate claim enforcement before privileged reads.
-7. Await the sanitized WhatsApp integration contract. Keep discovery/booking, Health Passport, SOS, payments, and other M2–M4 work paused until M1 is accepted.
+1. Add the repository Actions secret `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` using a single-line Base64 encoding of the private development keystore; never paste the value into chat or commit the key.
+2. Once saved, rerun `ci.yml` on `fresh-rebuild` using `workflow_dispatch`. The workflow will verify the registered key and final APK fingerprints, then upload a private artifact only if they match. Install it on an authorized Android device and test Google sign-in and owner-only profile persistence.
+3. Reauthorize/select the Vercel account/team that owns the existing Public and Admin projects. Inspect only those projects after visible; do not create replacements.
+4. Google is enabled, but Email/Password is currently disabled. Ask the user before changing that sign-in behavior; configure Web runtime values only in the correct secure environments.
+5. Keep Firestore rules undeployed until the exact payload is reviewed and explicitly approved. The candidate policy passes 8/8 isolated Emulator tests; live access remains deny-all per the last verified state.
+6. Obtain the initial Admin email and sanitized WhatsApp API contract when ready. Keep all M2–M4 work paused until M1 acceptance and explicit approval.
 
 ## Safety notes
 
@@ -102,3 +101,17 @@ The only team visible after reauthorization is `rajahaider50`'s Hobby team, and 
 - [Implementation matrix](docs/IMPLEMENTATION_MATRIX.md)
 - [Acceptance ToDo](TODO.md)
 - [GitHub Actions](https://github.com/rajahaider50/homigo-care-platform/actions)
+
+
+## Latest verification update (2026-10-10)
+
+This snapshot supersedes earlier progress and blocker notes wherever they differ.
+
+- **Current M1 scores:** Public Website **63%** (2.5/4), Admin Panel **38%** (1.5/4), native Android **50%** (2/4). M1 remains open; M2 remains paused.
+- **Local checks:** Firestore Rules Emulator 8/8; Public and Admin typecheck, lint, tests, and production builds pass. Fresh local previews returned HTTP 200 for the Public root, services/auth/action routes and route manifest, and for the Admin root. The temporary external Vite host check returned 403 due to Vite host validation; this is not a Vercel deployment or an authentication test.
+- **Google OAuth:** Live Firebase Console lists Google as enabled. The Web client ID field is populated; the client secret was masked and not read. The registered development fingerprints match the local key: SHA-1 `F4:4A:F8:1E:50:99:63:1E:5C:49:A2:78:D0:7B:BD:13:57:35:98:E9`; SHA-256 `09:BF:4F:EC:5B:FE:A4:23:0E:27:B7:20:36:3C:46:74:CE:BA:54:7E:8E:FD:79:8D:14:44:C2:63:E6:C2:AF:40`. The refreshed Android JSON contains both Android and Web OAuth client types. Email/Password is not enabled. No real-device sign-in has been tested; the Sandbox has no Android SDK or `adb`.
+- **GitHub secrets and APK:** Retried stdin-only writes for `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` and `FIREBASE_ANDROID_GOOGLE_SERVICES_JSON`; both returned HTTP 403. The existing Firebase config secret was available to CI run `38055840563` and passed metadata validation. The existing downloaded APK is integrity-verified but signed with the runner's default key, not the registered certificate. CI now fails closed: it requires the registered key, checks its fingerprints, checks the final APK signer, and uploads only a matching APK. A correctly signed Actions artifact does not yet exist.
+- **Vercel:** The reauthorized Hobby team has zero projects and no Git-linked deployment context; historical Public/Admin project lookups return 404. No replacement projects were created. The user must authorize the team/account containing the existing projects.
+- **Firestore:** No shared data or rules changed. The candidate profile-aware policy passes 8/8 isolated tests, including anonymous/patient list denial, unverified-admin denial, and health/payment namespace denial. The live database's Data view showed no documents. The live Rules editor source did not render; the prior verified production-mode deny-all state remains the basis for status. Firebase CLI has no authorized account in the Sandbox.
+
+**Required owner actions:** add `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` in repository Settings → Secrets and variables → Actions (single-line Base64 of the private development keystore; never paste the value in chat), then request a `ci.yml` rerun. Reconnect the correct existing Vercel team/project. Decide whether Email/Password should be enabled. No rules deployment or M2 work is authorized by this update.
