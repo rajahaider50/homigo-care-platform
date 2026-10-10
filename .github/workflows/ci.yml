@@ -70,6 +70,30 @@ jobs:
           fi
           printf '%s' "$GOOGLE_SERVICES_JSON" > apps/android/app/google-services.json
           echo "available=true" >> "$GITHUB_OUTPUT"
+      - name: Validate Firebase Android config without printing values
+        if: steps.firebase-config.outputs.available == 'true'
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          config = json.loads(Path("apps/android/app/google-services.json").read_text())
+          project_id = config.get("project_info", {}).get("project_id")
+          client = next(
+              (
+                  item
+                  for item in config.get("client", [])
+                  if item.get("client_info", {})
+                  .get("android_client_info", {})
+                  .get("package_name") == "pk.homigocare.android"
+              ),
+              None,
+          )
+          oauth_clients = client.get("oauth_client", []) if client else []
+          if project_id != "homigo-care-dev-20261010" or client is None or not oauth_clients:
+              raise SystemExit("Firebase Android config failed project/package/OAuth validation.")
+          print("Firebase Android config passed project/package/OAuth validation; values withheld.")
+          PY
       - name: Set up Android SDK
         if: steps.firebase-config.outputs.available == 'true'
         uses: android-actions/setup-android@v3
@@ -79,6 +103,14 @@ jobs:
         if: steps.firebase-config.outputs.available == 'true'
         working-directory: apps/android
         run: ./gradlew --no-daemon lint testDebugUnitTest assembleDebug
+      - name: Upload development debug APK
+        if: steps.firebase-config.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: homigo-care-debug-apk-${{ github.sha }}
+          path: apps/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
       - name: Report required repository secret
         if: steps.firebase-config.outputs.available != 'true'
         run: echo "::notice title=Android CI skipped::Add the Firebase Android configuration as the repository Actions secret FIREBASE_ANDROID_GOOGLE_SERVICES_JSON to enable this job. The local configuration is intentionally ignored and not committed."

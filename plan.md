@@ -34,7 +34,7 @@ Email action code ایک بار استعمال ہونے والا حساس creden
 
 ## M1 کی ترتیب اور hosting
 
-1. **Android بنیاد:** fresh repository میں Kotlin/Compose auth/profile code، اصل assets، اور unit-test source موجود ہیں۔ Gradle configuration/signing checks پہلے پاس ہوئے، مگر GitHub Actions میں Android config secret دستیاب نہ ہونے سے SDK setup، lint، native unit tests اور debug APK build skip ہوئے؛ اس لیے APK یا device-side Firebase sign-in کو مکمل نہیں کہا جا سکتا۔
+1. **Android بنیاد:** fresh repository میں Kotlin/Compose auth/profile code، اصل assets، اور unit-test source موجود ہیں۔ CI run `38055108814` میں Android SDK setup، lint، unit tests اور `assembleDebug` کامیاب ہوئے، مگر workflow نے APK artifact محفوظ نہیں کیا۔ CI runner کا default debug key Firebase میں رجسٹرڈ development key نہیں، اس لیے حقیقی Google sign-in ثابت نہیں۔ نیا workflow config metadata کی خاموش validation اور private 7-day APK artifact upload شامل کرتا ہے؛ device-side Firebase test ابھی باقی ہے۔
 2. **Public Website:** responsive public view اور Firebase auth/action routes بنیں گے؛ Vercel Hobby پر صرف user-approved non-commercial demo/staging نشر ہوگا۔ اسے commercial production نہیں کہا جائے گا۔
 3. **Admin panel:** الگ، sign-in-only، no-sign-up واجہ؛ valid custom claim کے بغیر کوئی privileged query نہیں۔ Admin email/claim نہ ہونے تک حقیقی Admin sign-in روکا رہے گا۔
 4. Firestore rules کو Firebase validator اور isolated Emulator tests سے جانچنا ہے۔ shared DEV project میں rules deploy کرنے سے پہلے exact payload اور پرانے collections پر اثر دکھا کر الگ واضح منظوری لینا لازم ہے۔
