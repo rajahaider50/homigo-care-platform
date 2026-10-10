@@ -1,0 +1,10 @@
+{
+  "routes": [
+    { "path": "/", "title": "HomiGo Care" },
+    { "path": "/services", "title": "Care services" },
+    { "path": "/auth", "title": "Patient sign-in or registration" },
+    { "path": "/auth/action", "title": "Firebase email action" },
+    { "path": "/auth/reset", "title": "Password reset" },
+    { "path": "/auth/verified", "title": "Email verification status" }
+  ]
+}

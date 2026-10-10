@@ -1,0 +1,24 @@
+{
+  "name": "homigo-care-platform",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "pnpm --recursive --if-present build",
+    "dev:public": "pnpm --filter @homigo/public-web dev",
+    "lint": "pnpm --recursive --if-present lint",
+    "test": "pnpm --recursive --if-present test",
+    "typecheck": "pnpm --recursive --if-present typecheck",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-homigo-care-rules --config firebase/firebase.json \"node --test tests/firestore/firestore.rules.test.mjs\""
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@firebase/rules-unit-testing": "6.0.0",
+    "eslint": "10.12.0",
+    "firebase": "13.0.0",
+    "firebase-tools": "15.33.0",
+    "typescript-eslint": "8.71.1"
+  }
+}

@@ -1,0 +1,64 @@
+:root {
+  --hg-teal-50: #E9F5F2;
+  --hg-teal-100: #CFE8E3;
+  --hg-teal-200: #A5D2CA;
+  --hg-teal-300: #6FB1A6;
+  --hg-teal-400: #3E8F83;
+  --hg-teal-500: #1B6B63;
+  --hg-teal-600: #14574F;
+  --hg-teal-700: #0D4A44;
+  --hg-teal-800: #093632;
+  --hg-orange-50: #FEF1E8;
+  --hg-orange-100: #FDE3D1;
+  --hg-orange-200: #FAC4A0;
+  --hg-orange-500: #F5823A;
+  --hg-orange-700: #A8501A;
+  --hg-red-50: #FDECEB;
+  --hg-red-100: #F9CFCD;
+  --hg-red-500: #E53935;
+  --hg-red-700: #A52824;
+  --hg-green-50: #EAF6EB;
+  --hg-green-100: #CDE9CF;
+  --hg-green-500: #43A047;
+  --hg-green-700: #2D7A31;
+  --hg-primary: #1B6B63;
+  --hg-primary-dark: #0D4A44;
+  --hg-secondary: #F5823A;
+  --hg-white: #FFFFFF;
+  --hg-surface-muted: #F5F5F5;
+  --hg-text: #333333;
+  --hg-text-secondary: #888888;
+  --hg-text-secondary-aa: #666666;
+  --hg-error: #E53935;
+  --hg-success: #43A047;
+  --hg-border: #E3ECEA;
+  --hg-divider: #EEF3F2;
+  --hg-radius-button: 25px;
+  --hg-radius-input: 25px;
+  --hg-radius-card: 15px;
+  --hg-radius-chip: 20px;
+  --hg-radius-sheet: 24px;
+  --hg-radius-avatar: 999px;
+  --hg-radius-small: 8px;
+  --hg-space-0: 0px;
+  --hg-space-1: 4px;
+  --hg-space-2: 8px;
+  --hg-space-3: 12px;
+  --hg-space-4: 16px;
+  --hg-space-5: 20px;
+  --hg-space-6: 24px;
+  --hg-space-7: 32px;
+  --hg-space-8: 40px;
+  --hg-space-9: 48px;
+  --hg-space-10: 64px;
+  --hg-shadow-card: 0 4px 14px rgba(13,74,68,.08);
+  --hg-shadow-raised: 0 8px 24px rgba(13,74,68,.14);
+  --hg-shadow-sosGlow: 0 0 0 8px rgba(229,57,53,.18);
+  --hg-gradient-splash: linear-gradient(180deg, #1B6B63 0%, #0D4A44 100%);
+  --hg-font-latin: 'Plus Jakarta Sans', Arial, sans-serif;
+  --hg-font-urdu: 'Noto Naskh Arabic', 'Noto Nastaliq Urdu', serif;
+}
+[dir='rtl'] { font-family: var(--hg-font-urdu); line-height: 1.8; }
+@keyframes hg-sos-pulse { 0% { box-shadow: 0 0 0 0 rgba(229,57,53,.45);} 70% { box-shadow: 0 0 0 16px rgba(229,57,53,0);} 100% { box-shadow: 0 0 0 0 rgba(229,57,53,0);} }
+.hg-sos { background: var(--hg-error); color: #fff; animation: hg-sos-pulse 1.2s infinite; }
+@media (prefers-reduced-motion: reduce) { .hg-sos { animation: none; } }

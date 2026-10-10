@@ -1,0 +1,202 @@
+{
+  "batch_id": "01",
+  "instructions_for_founder": "Use only these supplied archive assets for the Android app. Keep each PNG transparent, preserve the listed filename, and place it at the exact destination path. Do not reuse this Android batch for iOS, Web, or Admin.",
+  "global_style": {
+    "art_style": "flat 2D vector illustration, clean line art, minimal shading, compact Android asset composition",
+    "palette": [
+      "#1B6B63",
+      "#0D4A44",
+      "#F5823A",
+      "#FFFFFF"
+    ],
+    "forbidden": [
+      "photorealism",
+      "watermarks",
+      "baked-in text",
+      "third-party logos",
+      "generic stock-photo composition"
+    ]
+  },
+  "images": [
+    {
+      "id": "img_01",
+      "filename": "il_onboarding_homecare.png",
+      "destination_path": "assets_pending/generated/il_onboarding_homecare.png",
+      "used_on_screen": "S-02 Onboarding 1/3",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: friendly nurse and older adult in a real home-care moment; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_02",
+      "filename": "il_onboarding_booking.png",
+      "destination_path": "assets_pending/generated/il_onboarding_booking.png",
+      "used_on_screen": "S-03 Onboarding 2/3",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: care appointment calendar, medical cross, and location pin; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_03",
+      "filename": "il_onboarding_passport.png",
+      "destination_path": "assets_pending/generated/il_onboarding_passport.png",
+      "used_on_screen": "S-04 Onboarding 3/3",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: secure health passport card with shield and subtle checkmark; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_04",
+      "filename": "il_empty_bookings.png",
+      "destination_path": "assets_pending/generated/il_empty_bookings.png",
+      "used_on_screen": "P-12 My Bookings empty state",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: empty appointment clipboard with small calendar mark; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_05",
+      "filename": "il_empty_documents.png",
+      "destination_path": "assets_pending/generated/il_empty_documents.png",
+      "used_on_screen": "P-14 Health Passport empty/upload state",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: secure document folder with medical document and upload arrow; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_06",
+      "filename": "il_empty_notifications.png",
+      "destination_path": "assets_pending/generated/il_empty_notifications.png",
+      "used_on_screen": "P-22 Notifications empty state",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: notification bell with a small heart and no unread alerts; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_07",
+      "filename": "il_empty_reviews.png",
+      "destination_path": "assets_pending/generated/il_empty_reviews.png",
+      "used_on_screen": "P-23 Reviews empty state",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: empty review card with star outline and speech bubble; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_08",
+      "filename": "il_empty_wallet.png",
+      "destination_path": "assets_pending/generated/il_empty_wallet.png",
+      "used_on_screen": "P-16 Wallet empty state",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: empty wallet with medical cross and payment card slot; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_09",
+      "filename": "il_empty_chat.png",
+      "destination_path": "assets_pending/generated/il_empty_chat.png",
+      "used_on_screen": "P-24 Messages empty state",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: two empty chat bubbles with a gentle care heart; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_10",
+      "filename": "il_empty_professional.png",
+      "destination_path": "assets_pending/generated/il_empty_professional.png",
+      "used_on_screen": "PR-05 Verification Pending",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: professional profile card with verification shield, pending indicator; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_11",
+      "filename": "il_badge_certified.png",
+      "destination_path": "assets_pending/generated/il_badge_certified.png",
+      "used_on_screen": "P-15 Professional detail / PR-11 profile",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: certified circular badge with checkmark; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_12",
+      "filename": "il_badge_excellence.png",
+      "destination_path": "assets_pending/generated/il_badge_excellence.png",
+      "used_on_screen": "P-15 Professional detail / PR-11 profile",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: excellence badge with star and ribbon; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_13",
+      "filename": "il_badge_elite.png",
+      "destination_path": "assets_pending/generated/il_badge_elite.png",
+      "used_on_screen": "P-15 Professional detail / PR-11 profile",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: elite gold badge with restrained premium finish; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_14",
+      "filename": "il_category_nursing.png",
+      "destination_path": "assets_pending/generated/il_category_nursing.png",
+      "used_on_screen": "P-11 Home service categories / P-13 Browse",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: nursing service category symbol: stethoscope and care cross; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_15",
+      "filename": "il_category_physiotherapy.png",
+      "destination_path": "assets_pending/generated/il_category_physiotherapy.png",
+      "used_on_screen": "P-11 Home service categories / P-13 Browse",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: physiotherapy category symbol: human movement and support arc; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_16",
+      "filename": "il_category_pharmacy.png",
+      "destination_path": "assets_pending/generated/il_category_pharmacy.png",
+      "used_on_screen": "P-11 Home service categories / P-13 Browse",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: pharmacy category symbol: medicine bottle and cross; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_17",
+      "filename": "il_category_lab.png",
+      "destination_path": "assets_pending/generated/il_category_lab.png",
+      "used_on_screen": "P-11 Home service categories / P-13 Browse",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: diagnostics category symbol: lab flask with pulse line; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_18",
+      "filename": "il_admin_verification_empty.png",
+      "destination_path": "assets_pending/generated/il_admin_verification_empty.png",
+      "used_on_screen": "PR-05 Verification Pending fallback",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: professional document review queue with no decision yet; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_19",
+      "filename": "il_admin_disputes_empty.png",
+      "destination_path": "assets_pending/generated/il_admin_disputes_empty.png",
+      "used_on_screen": "P-25 Emergency/Support fallback",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: calm support resolution scene with two-way communication; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    },
+    {
+      "id": "img_20",
+      "filename": "il_web_hero.png",
+      "destination_path": "assets_pending/generated/il_web_hero.png",
+      "used_on_screen": "P-11 Home dashboard hero card",
+      "background": "transparent",
+      "size_hint": "2048x2048",
+      "prompt": "Flat 2D vector illustration for the Android Material 3 HomigoCare app: warm home-care scene used as a compact Android home hero; compact centered composition with clear silhouette at small mobile size, deep teal #0D4A44, teal #1B6B63, orange #F5823A and white, clean line art, minimal shading, transparent background, no text."
+    }
+  ]
+}

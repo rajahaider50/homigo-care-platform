@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.HomigoCare" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:statusBarColor">@color/hg_primary_dark</item>
+        <item name="android:navigationBarColor">@color/hg_primary_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

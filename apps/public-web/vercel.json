@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/auth/action", "destination": "/" },
+    { "source": "/auth/reset", "destination": "/" },
+    { "source": "/auth/verified", "destination": "/" },
+    { "source": "/auth", "destination": "/" },
+    { "source": "/services", "destination": "/" }
+  ]
+}
