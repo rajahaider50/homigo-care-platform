@@ -31,9 +31,11 @@ The following four fingerprints remain on the previous development Android app o
 
 During setup, an attempted reuse of the previous debug SHA-1 on the new app triggered Firebase's cross-project OAuth warning. That just-added fingerprint was removed. The new unique development-only pair listed above was registered instead. The previous development and production projects remain unchanged.
 
-## Firebase client configuration and CI
+## Google sign-in, client configuration and CI
 
-The current project's `google-services.json` is a Firebase client config, not a service-account key; it is not committed. The repository secret `FIREBASE_ANDROID_GOOGLE_SERVICES_JSON` is still to be added manually by the owner. Android CI skips native verification until that secret exists. Do not paste config values into chat or commit them.
+Google Sign-In is enabled in the current development project with public-facing name `HomiGo Care` and support email `zarghamabbas859@gmail.com`. The Android auth screen and Credential Manager flow are present in source. Enabling the provider generated OAuth client entries, so **use the newly refreshed** `google-services.json`; do not reuse a copy downloaded before Google Sign-In was enabled. This file is Firebase client config, not a service-account key, and must not be committed.
+
+The owner must add or replace the encrypted GitHub Actions secret `FIREBASE_ANDROID_GOOGLE_SERVICES_JSON` using the refreshed config. The last completed CI run before the refresh, `38052108808`, skipped Android SDK setup/native verification because no usable secret was available at run time. GitHub secret listing currently returns HTTP 403 to this integration; no secret value was read or changed. Do not paste config values into chat. The Google sign-in flow still needs a debug build signed with the registered development key and an authorized on-device sign-in test. Firebase Email/Password is not yet enabled; release signing remains separate and owner-controlled.
 
 ## Media storage
 
