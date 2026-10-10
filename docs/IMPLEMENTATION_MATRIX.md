@@ -1,4 +1,6 @@
-# HomiGo Care — four-milestone implementation matrix (2026-10-10)
+# HomiGo Care — four-milestone implementation matrix (current update: 2026-10-11)
+
+> **Current M2 snapshot:** Implementation is in progress on `fix/android-auth-registration-flow` / [PR #1](https://github.com/rajahaider50/homigo-care-platform/pull/1), not accepted. The shared OTP/auth API, client auth flows, Public discovery/booking slice, and expanded Firestore rules are in source; the dev rules are deployed and the Rules Emulator passes 15/15. Workspace typecheck, lint, tests (API 17/17, Admin 3/3, Public 4/4), production builds, and visual Web/Admin walkthrough passed locally. Do not merge until two security findings are fixed: client-selected profile role authority and fail-open/mismatched API origin readiness. Live WhatsApp credentials/responses, real provider data, real-device Google sign-in, Android SDK revalidation, and fresh Vercel staging remain outstanding. See [`NEXT_AI_HANDOFF_2026-10-11.md`](../NEXT_AI_HANDOFF_2026-10-11.md); the matrix entries below preserve the initial M1 snapshot and may be superseded by later history entries.
 
 ## Confirmed architecture
 

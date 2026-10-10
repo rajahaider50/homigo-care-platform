@@ -2,7 +2,13 @@
 
 This is the project progress ledger. Do not mark a clause complete without the described evidence. Later milestones remain gated on explicit user approval.
 
-## Milestone 1 — first 25% (in progress)
+## Current snapshot — 2026-10-11
+
+M2 source work is in progress on `fix/android-auth-registration-flow` / [PR #1](https://github.com/rajahaider50/homigo-care-platform/pull/1); this is not milestone acceptance. Workspace typecheck, lint, tests (API 17/17, Admin 3/3, Public 4/4), production builds, and Firestore Rules Emulator (15/15) passed locally. M2 Firestore rules are deployed to the dev project after owner approval. The Public Website signup flow visibly blocks OTP while server configuration is incomplete.
+
+Do not merge or deploy the API until the registration-role trust issue and CORS/readiness inconsistency are fixed with regression tests. Do not claim live OTP, Google sign-in on a real device, a successful booking with a real approved provider, fresh Vercel staging, or 70% completion for any product. The current Sandbox Android build rerun is blocked by missing API 35 SDK packages; no physical device is attached. See [`NEXT_AI_HANDOFF_2026-10-11.md`](NEXT_AI_HANDOFF_2026-10-11.md) for exact findings and ordered continuation steps. No Antigravity is authorized or used.
+
+## Milestone 1 — first 25% (historical baseline; see current snapshot)
 
 - [ ] Native Android project, official design system, correct navigation, auth screens, initial patient dashboard, basic profile flow, validation, loading/error/empty/success states.
 - [ ] Firebase Auth email/password with sign-up, verified-email gate/resend/reload, logout, password reset, Google sign-in using the registered Android OAuth fingerprints; do not store passwords in plaintext.
@@ -15,7 +21,7 @@ This is the project progress ledger. Do not mark a clause complete without the d
 - [ ] Preserve existing Firebase data, old repos/projects and supplied ZIP/PDF/assets. Never seed fake production records.
 - [ ] Report exact build/test/deployment artifacts, integrations actually working, blocked inputs, and required owner actions; then wait for approval before M2.
 
-## Milestone 2 — cumulative 50% (not started; approval-gated)
+## Milestone 2 — cumulative 50% (implementation in progress; not accepted)
 
 - [ ] Complete the working patient and professional authentication/onboarding paths, including Google sign-in and WhatsApp OTP only when the user's Java API sample and configuration are available.
 - [ ] Add real Doctor/Nurse discovery and professional profiles that show only approved professionals and accurate stored qualification/status/availability.

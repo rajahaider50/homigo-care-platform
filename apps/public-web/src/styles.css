@@ -139,6 +139,8 @@ h1, h2, h3, p { overflow-wrap: anywhere; }
 .auth-card h1, .auth-card h2 { margin: 0; color: var(--hg-primary-dark); font-size: 27px; letter-spacing: -.035em; line-height: 1.2; }
 .auth-card h1 { font-size: 29px; }
 .auth-intro { margin: 9px 0 20px; color: var(--hg-text-secondary-aa); font-size: 11px; }
+.auth-login-method { display: flex; gap: 9px; margin-block: 17px 3px; }
+.auth-login-method .button { flex: 1; min-width: 0; padding-inline: 12px; }
 .auth-form { display: grid; gap: 14px; margin-top: 20px; }
 .auth-form label { display: grid; gap: 6px; color: var(--hg-text); font-size: 11px; font-weight: 700; }
 .auth-form input { width: 100%; min-height: 47px; padding: 0 15px; border: 1px solid var(--hg-border); border-radius: var(--hg-radius-input); background: #FCFDFD; color: var(--hg-text); font-size: 12px; }
@@ -227,3 +229,72 @@ h1, h2, h3, p { overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+
+/* M2 secure-entry controls: preserve the existing design system and provide visible keyboard focus. */
+.password-field { position: relative; display: block; }
+.password-field input { padding-right: 52px !important; }
+.password-toggle { position: absolute; inset-block: 5px; inset-inline-end: 6px; width: 38px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--hg-text-secondary); cursor: pointer; }
+.password-toggle:hover { background: var(--hg-teal-50); color: var(--hg-primary-dark); }
+.password-toggle:focus-visible { outline: 3px solid var(--hg-teal-300); outline-offset: 1px; }
+.whatsapp-otp-fields { display: grid; gap: 12px; padding: 15px; border: 1px solid var(--hg-teal-100); border-radius: var(--hg-radius-card); background: #fbfdfc; }
+.whatsapp-otp-fields > label { display: grid; gap: 6px; color: var(--hg-text); font-size: 11px; font-weight: 700; }
+.whatsapp-otp-fields small { color: var(--hg-text-secondary-aa); font-size: 10px; font-weight: 400; }
+.phone-input { display: flex; min-height: 47px; overflow: hidden; border: 1px solid var(--hg-border); border-radius: var(--hg-radius-input); background: #fcfdfd; }
+.phone-input:focus-within { border-color: var(--hg-primary); outline: 3px solid var(--hg-teal-50); }
+.phone-prefix { display: grid; place-items: center; min-width: 56px; padding-inline: 10px; border-inline-end: 1px solid var(--hg-divider); background: var(--hg-teal-50); color: var(--hg-primary-dark); font-size: 12px; font-weight: 800; }
+.phone-input input { min-width: 0; flex: 1; min-height: 45px; padding-inline: 12px; border: 0 !important; outline: none !important; background: transparent !important; }
+.otp-success { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--hg-primary-dark); font-size: 11px; font-weight: 700; }
+
+
+/* M2 patient discovery and booking flow. */
+.care-page { padding-block: clamp(42px, 6vw, 76px) 72px; }
+.care-page-heading { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-bottom: 28px; }
+.care-page-heading h1 { margin: 0; color: var(--hg-primary-dark); font-size: clamp(34px, 5vw, 55px); letter-spacing: -.05em; line-height: 1.12; }
+.care-page-heading p:last-child { max-width: 650px; margin: 12px 0 0; color: var(--hg-text-secondary-aa); font-size: 14px; }
+.care-heading-mark { width: 76px; height: 76px; display: grid; place-items: center; flex: 0 0 auto; border: 1px solid var(--hg-teal-100); border-radius: 23px; background: var(--hg-teal-50); color: var(--hg-primary); }
+.care-notice { margin: 0 0 18px; padding: 13px 16px; border: 1px solid var(--hg-teal-100); border-radius: 13px; background: var(--hg-teal-50); color: var(--hg-primary-dark); font-size: 12px; line-height: 1.6; }
+.care-state { display: grid; justify-items: start; gap: 10px; padding: clamp(23px, 4vw, 38px); border: 1px solid var(--hg-divider); border-radius: 22px; background: var(--hg-white); box-shadow: var(--hg-shadow-card); }
+.care-state h2 { margin: 0; color: var(--hg-primary-dark); font-size: 23px; }
+.care-state p { max-width: 580px; margin: 0 0 8px; color: var(--hg-text-secondary-aa); font-size: 12px; }
+.care-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr); align-items: start; gap: 18px; }
+.care-panel { min-width: 0; padding: clamp(18px, 2.5vw, 25px); border: 1px solid var(--hg-divider); border-radius: 21px; background: var(--hg-white); box-shadow: var(--hg-shadow-card); }
+.care-panel-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+.care-panel-heading .eyebrow { margin-bottom: 7px; }
+.care-panel-heading h2, .booking-form-panel h2 { margin: 0; color: var(--hg-primary-dark); font-size: 20px; letter-spacing: -.035em; line-height: 1.25; }
+.care-count { padding: 7px 9px; border-radius: var(--hg-radius-chip); background: var(--hg-teal-50); color: var(--hg-primary-dark); font-size: 9px; font-weight: 800; white-space: nowrap; }
+.professional-list, .patient-booking-list { display: grid; gap: 9px; }
+.professional-card { width: 100%; display: grid; grid-template-columns: 42px minmax(0, 1fr) 18px; align-items: center; gap: 12px; padding: 13px; border: 1px solid var(--hg-divider); border-radius: 14px; background: #fcfdfd; color: var(--hg-text); text-align: left; cursor: pointer; transition: border-color .16s ease, background .16s ease, transform .16s ease; }
+.professional-card:hover { transform: translateY(-1px); border-color: var(--hg-teal-200); }
+.professional-card:focus-visible { outline: 3px solid var(--hg-teal-300); outline-offset: 2px; }
+.professional-selected { border-color: var(--hg-primary); background: var(--hg-teal-50); box-shadow: inset 0 0 0 1px var(--hg-primary); }
+.professional-avatar { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: var(--hg-teal-100); color: var(--hg-primary-dark); }
+.professional-details { display: grid; gap: 2px; min-width: 0; }
+.professional-details strong { color: var(--hg-primary-dark); font-size: 11px; }
+.professional-details span { color: var(--hg-text-secondary-aa); font-size: 10px; }
+.professional-details small { color: var(--hg-text-secondary); font-size: 9px; line-height: 1.45; }
+.provider-check { color: var(--hg-primary); opacity: 0; }
+.professional-selected .provider-check { opacity: 1; }
+.care-empty { margin: 0; padding: 15px; border: 1px dashed var(--hg-border); border-radius: 13px; color: var(--hg-text-secondary-aa); font-size: 11px; line-height: 1.6; }
+.booking-form-panel > .eyebrow { margin-bottom: 6px; }
+.care-form { display: grid; gap: 13px; margin-top: 17px; }
+.care-form label { display: grid; gap: 6px; color: var(--hg-text); font-size: 10px; font-weight: 700; }
+.care-form input, .care-form textarea { width: 100%; min-height: 45px; padding: 10px 12px; border: 1px solid var(--hg-border); border-radius: var(--hg-radius-input); background: #fcfdfd; color: var(--hg-text); font-size: 11px; }
+.care-form textarea { resize: vertical; }
+.care-form input:focus, .care-form textarea:focus { border-color: var(--hg-primary); outline: 3px solid var(--hg-teal-50); }
+.selected-provider { display: grid; gap: 2px; margin: 0; padding: 11px 12px; border-radius: 12px; background: var(--hg-teal-50); }
+.selected-provider strong { color: var(--hg-primary-dark); font-size: 11px; }
+.selected-provider span { color: var(--hg-text-secondary-aa); font-size: 9px; }
+.care-form-note { color: var(--hg-text-secondary); font-size: 9px; line-height: 1.55; }
+.my-bookings-panel { grid-column: 1 / -1; }
+.patient-booking-card { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 13px; border: 1px solid var(--hg-divider); border-radius: 13px; background: #fcfdfd; }
+.patient-booking-card > div { display: grid; gap: 3px; }
+.patient-booking-card strong { color: var(--hg-primary-dark); font-size: 11px; text-transform: capitalize; }
+.patient-booking-card span, .patient-booking-card small { color: var(--hg-text-secondary-aa); font-size: 9px; }
+.cancel-booking { min-height: 34px; padding: 0 11px; border: 1px solid #f0c8bf; border-radius: 9px; background: #fff4f1; color: #923d31; font-size: 9px; font-weight: 800; cursor: pointer; }
+.cancel-booking:disabled { cursor: not-allowed; opacity: .6; }
+.booking-state-pill { padding: 6px 9px; border-radius: 99px; background: var(--hg-teal-50); color: var(--hg-primary-dark) !important; font-weight: 800; text-transform: capitalize; }
+.care-disclaimer { display: flex; align-items: flex-start; gap: 9px; margin: 20px 0 0; color: var(--hg-text-secondary-aa); font-size: 10px; line-height: 1.6; }
+.care-disclaimer .brand-icon { color: var(--hg-primary); }
+@media (max-width: 760px) { .care-layout { grid-template-columns: 1fr; } .my-bookings-panel { grid-column: auto; } }
+@media (max-width: 520px) { .care-page-heading { align-items: flex-start; } .care-heading-mark { width: 56px; height: 56px; border-radius: 17px; } .care-panel-heading { flex-direction: column; } .professional-card { grid-template-columns: 38px minmax(0, 1fr) 17px; gap: 9px; padding: 11px; } .professional-avatar { width: 38px; height: 38px; } .patient-booking-card { align-items: flex-start; flex-direction: column; } .cancel-booking { width: 100%; } }

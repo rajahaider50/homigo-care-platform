@@ -6,7 +6,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.UserProfileChangeRequest
 
 /** Firebase is the identity provider; app data is persisted separately under Firestore rules. */
 class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()) {
@@ -21,7 +20,22 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
                 } else {
                     refreshUserAndRequireVerified(user, onResult)
                 }
+        }
+    }
+
+    fun signInWithCustomToken(customToken: String, onResult: (Result<FirebaseUser>) -> Unit) {
+        if (customToken.isBlank()) {
+            onResult(Result.failure(IllegalArgumentException("The secure sign-in token is missing.")))
+            return
+        }
+        auth.signInWithCustomToken(customToken).addOnCompleteListener { task ->
+            val user = task.result?.user
+            if (!task.isSuccessful || user == null) {
+                onResult(Result.failure(task.exception ?: IllegalStateException("Phone sign-in failed.")))
+            } else {
+                refreshUserAndRequireVerified(user, onResult)
             }
+        }
     }
 
     fun signInWithGoogle(idToken: String, onResult: (Result<FirebaseUser>) -> Unit) {
@@ -40,23 +54,19 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
         }
     }
 
-    fun createAccount(name: String, email: String, password: String, onResult: (Result<FirebaseUser>) -> Unit) {
-        auth.createUserWithEmailAndPassword(email.trim(), password)
-            .addOnCompleteListener { task ->
-                val user = task.result?.user
-                if (!task.isSuccessful || user == null) {
-                    onResult(Result.failure(task.exception ?: IllegalStateException("Account creation failed.")))
-                    return@addOnCompleteListener
-                }
-                val profile = UserProfileChangeRequest.Builder().setDisplayName(name.trim()).build()
-                user.updateProfile(profile).continueWithTask { update ->
-                    if (!update.isSuccessful) throw (update.exception ?: IllegalStateException("Could not save the account name."))
-                    user.sendEmailVerification()
-                }.addOnCompleteListener { verification ->
-                    if (verification.isSuccessful) onResult(Result.success(user))
-                    else onResult(Result.failure(verification.exception ?: IllegalStateException("Verification email could not be sent.")))
-                }
+    /** Sign in to an account already created by the proof-gated HomiGo API, then request Firebase email verification. */
+    fun signInAfterServerRegistration(email: String, password: String, onResult: (Result<FirebaseUser>) -> Unit) {
+        auth.signInWithEmailAndPassword(email.trim(), password).addOnCompleteListener { task ->
+            val user = task.result?.user
+            if (!task.isSuccessful || user == null) {
+                onResult(Result.failure(task.exception ?: IllegalStateException("The verified account could not be opened.")))
+                return@addOnCompleteListener
             }
+            user.sendEmailVerification().addOnCompleteListener { verification ->
+                if (verification.isSuccessful) onResult(Result.success(user))
+                else onResult(Result.failure(verification.exception ?: IllegalStateException("The Firebase email verification could not be sent.")))
+            }
+        }
     }
 
     fun resendVerification(onResult: (Result<Unit>) -> Unit) {

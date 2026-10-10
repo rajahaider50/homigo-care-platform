@@ -18,6 +18,12 @@ class AuthFormValidatorTest {
         assertNull(AuthFormValidator.validate(false, "", "user@example.com", "123456"))
     }
 
+    @Test fun phoneLoginRequiresLinkedPakistaniNumberAndPassword() {
+        assertEquals("Enter the 10-digit Pakistani mobile number linked to your account.", AuthFormValidator.validatePhoneLogin("234", "secret"))
+        assertEquals("Enter your password.", AuthFormValidator.validatePhoneLogin("3495031007", ""))
+        assertNull(AuthFormValidator.validatePhoneLogin("3495031007", "existing-password"))
+    }
+
     @Test fun emailValidationRejectsWhitespaceAndMissingDomain() {
         assertTrue(AuthFormValidator.validateEmail(" user@example.com "))
         assertEquals(false, AuthFormValidator.validateEmail("user example.com"))

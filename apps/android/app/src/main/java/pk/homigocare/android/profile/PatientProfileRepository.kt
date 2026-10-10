@@ -26,14 +26,22 @@ class PatientProfileRepository(private val firestore: FirebaseFirestore = Fireba
                 return@addOnCompleteListener
             }
 
+            val claims = tokenTask.result?.claims.orEmpty()
+            val phoneNumber = claims["whatsapp_number"] as? String
+            if (claims["whatsapp_verified"] != true || phoneNumber?.matches(Regex("^\\+923[0-9]{9}$")) != true) {
+                onResult(Result.failure(SecurityException("Verify and link your Pakistani WhatsApp number before opening a patient profile.")))
+                return@addOnCompleteListener
+            }
+
             val profileRef = firestore.collection("profiles").document(user.uid)
             profileRef.get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     val storedUid = snapshot.getString("uid")
                     val storedEmail = snapshot.getString("email")
+                    val storedPhoneNumber = snapshot.getString("phoneNumber")
                     val role = snapshot.getString("role")
                     val storedName = snapshot.getString("displayName").orEmpty()
-                    if (storedUid != user.uid || storedEmail != email || role != "patient") {
+                    if (storedUid != user.uid || storedEmail != email || storedPhoneNumber != phoneNumber || role != "patient") {
                         onResult(Result.failure(SecurityException("This account profile is not available to this user.")))
                     } else {
                         onResult(Result.success(PatientProfile(user.uid, email, storedName.ifBlank { name })))
@@ -44,6 +52,7 @@ class PatientProfileRepository(private val firestore: FirebaseFirestore = Fireba
                         "email" to email,
                         "displayName" to name,
                         "role" to "patient",
+                        "phoneNumber" to phoneNumber,
                         "createdAt" to FieldValue.serverTimestamp(),
                         "updatedAt" to FieldValue.serverTimestamp(),
                     )

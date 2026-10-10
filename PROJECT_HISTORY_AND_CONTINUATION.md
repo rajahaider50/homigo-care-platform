@@ -1,17 +1,28 @@
 # HomiGo Care — Project History and Continuation
 
-**Updated:** 2026-10-10
+**Updated:** 2026-10-11
 **Purpose:** Preserve project decisions, verified state, and safe next steps for a future AI or developer session. Treat this document as a handover, not as permission to bypass any approval gate.
 
 ## User-authorized scope and non-negotiable constraints
 
 - The user selected **full scope with Firebase/Firestore** as authoritative over the minimalist build kit's Express/PostgreSQL outline.
-- Continue on the private repository [`rajahaider50/homigo-care-platform`](https://github.com/rajahaider50/homigo-care-platform), branch `fresh-rebuild`. Do not replace or reset old repositories or Firebase projects.
+- Continue on the private repository [`rajahaider50/homigo-care-platform`](https://github.com/rajahaider50/homigo-care-platform), active feature branch `fix/android-auth-registration-flow`, with PR #1 targeting `fresh-rebuild`. Do not replace or reset old repositories or Firebase projects; do not merge while the current security blockers remain open.
 - The product is a shared Firebase/Firestore backend with three separate clients: native Android, Public Website, and protected Admin panel. Android must be real Kotlin/Jetpack Compose, not a web wrapper.
 - Use genuine backend data only. Do not seed fake users, providers, availability, bookings, payments, patient records, or clinical data. Emulator-only synthetic test identities are acceptable only in the isolated Rules Emulator project.
 - Never commit secrets or credentials. The Firebase Android client JSON and development signing keystore are outside the repository. Do not display them in logs or chat. The debug keystore is development-only, not a release key.
-- The project follows four cumulative 25% milestones. M1 is Foundation & First Vertical Slice; M2, M3, and M4 are not started and require acceptance of the preceding milestone. No M2 work without explicit M1 acceptance.
+- The project follows four cumulative 25% milestones. The user authorized proceeding into M2 on 2026-10-10; M2 implementation is in progress but has not been accepted. M3 and M4 remain gated. Do not describe authorization to proceed as milestone acceptance.
 - Report progress separately for Website, Admin, and Android. Scores must reflect implementation **and** verification, not code volume.
+
+## Current M2 snapshot — 2026-10-11 (authoritative over older notes below)
+
+- Source work is on `fix/android-auth-registration-flow`; PR [#1](https://github.com/rajahaider50/homigo-care-platform/pull/1) targets `fresh-rebuild`. This user requested that all current source and handoff instructions be pushed to GitHub. Keep the PR unmerged and mark it draft until both security findings below are fixed, relevant checks pass, and milestone status is reviewed.
+- Implemented source includes the shared server-side OTP/auth API, OTP-gated Web/Android onboarding, phone/password sign-in, verified WhatsApp linking for existing Web email accounts, Public patient provider discovery/booking requests, Admin claim-gated shell, and expanded Firestore rules. Android remains native Kotlin/Compose.
+- The authoritative dev project is `homigo-care-dev-20261010`. M2 Firestore rules were deployed after owner approval; the isolated Rules Emulator suite passes 15/15. No live users/providers/bookings were seeded.
+- Local verification on 2026-10-11: workspace typecheck, lint, unit tests (API 17/17, Admin 3/3, Public Web 4/4), production builds, and Firestore Rules Emulator 15/15 passed. Public Website home/auth signup/care signed-out/services and Admin signed-out screens were visually reviewed. The signup page accurately shows that live WhatsApp verification is not configured and disables OTP controls.
+- The final native Android rerun did not start because the active Sandbox had no Android SDK path (`ANDROID_HOME`/`sdk.dir`). A checksum-verified command-line-tools archive was unpacked under `/home/ubuntu/Android/Sdk`, but API 35/build-tools packages were not installed. An older debug APK exists, but its signer was not reverified in this latest environment; no physical-device test was performed.
+- **Do not merge or deploy this code yet.** Independent review identified two concrete security/configuration blockers: client-selected profile roles can elevate account behavior (details in the handoff file), and API CORS/health readiness does not consistently fail closed when `HOMIGO_ALLOWED_ORIGINS` is absent or malformed. Keep the API undeployed until fixed and tested.
+- Live WhatsApp testing remains blocked on a gateway base URL, API key, and sanitized success/failure verification responses. Six legacy Vercel projects belong to `rajahaider50/homigocare-mvp`; no fresh staging projects for this repository were created. No real provider records or approved provider exist for end-to-end booking. Do not claim the approximately 70% per-product target has been met.
+- Historical entries below are retained for audit. In particular, any previous reference to using Antigravity is superseded by the user's explicit instruction not to use Antigravity; the related planning file is removed on this branch.
 
 ## Platform progress at handover
 
@@ -28,8 +39,8 @@ These percentages do **not** mean the full product is 38–63% complete. Discove
 ## Repository and architecture
 
 - Repository: `https://github.com/rajahaider50/homigo-care-platform`
-- Working branch: `fresh-rebuild`
-- Source baseline before this handover-doc change: `53647e5` (documentation refresh)
+- Working branch: `fix/android-auth-registration-flow` (PR #1 to `fresh-rebuild`)
+- Source baseline before this M2 handoff update: `4fc33b6`; current M2 source/documentation changes are being committed to the feature branch, not directly to `fresh-rebuild`.
 - The repo was confirmed clean before the handover edits. The authenticated GitHub user has repository admin/push permission and Actions access. The repository-local Git author email was corrected to the authenticated account's exact GitHub no-reply format for future commits; no existing commit was amended or rewritten.
 - Monorepo layout:
   - `apps/android` — native Kotlin/Jetpack Compose Patient and shared Doctor/Nurse foundation.
@@ -140,3 +151,18 @@ Feature implementation commit `401ca65846d6bc8aa1189157b67e59fdca5a2f3b` was pus
 
 ### Final PR head snapshot (2026-10-10)
 The branch was subsequently updated with documentation-only commit `324839497b130b62979507cc466cd4426d46d5e2`. Current PR #1 head is `3248394`, base `fresh-rebuild` remains `3906b04`, PR state OPEN and mergeable; it has not been merged. Latest CI run [38065526937](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38065526937) completed with both check jobs successful. As in the source commit's run, the Android job's overall success is fail-closed: Firebase config validation succeeded, signing secret `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` was absent, and native CI build/signature/artifact steps were skipped. The Web/Rules check passed. Local native lint/tests/build remain the only Android build evidence for this source change; no CI APK or device authentication verification exists.
+
+
+## M2 implementation and handoff update (2026-10-11)
+
+The user requested that feature work stop at this point, all current source be pushed to GitHub, and a continuation guide be saved for the next AI. The current branch is `fix/android-auth-registration-flow`, with open PR #1 against `fresh-rebuild`; this update must remain unmerged until the security findings are fixed. No Antigravity was used. The old Antigravity task-list file is removed on this branch because the user explicitly prohibited its use.
+
+**Implemented source in this branch:** shared Vercel Node API for WhatsApp OTP, OTP-gated registration, phone/password sign-in and one-use verification proofs; native Kotlin/Compose auth, WhatsApp linking and patient provider-discovery/booking slice; Public Website OTP-aware auth and `/care` workflow; updated Admin claim-gated shell copy; expanded Firestore rules and emulator coverage; truthful home/services copy and Cloudinary brand lockup. No secret files are intended for Git.
+
+**Checks actually passed on 2026-10-11:** `pnpm typecheck`; `pnpm lint`; workspace tests (API 17/17, Admin 3/3, Public Web 4/4); `pnpm build`; `pnpm test:rules` (15/15). Visual QA covered Public home, sign-in/sign-up pending-gateway notice, signed-out care, services, and Admin signed-out access. The last Android Gradle attempt stopped before compilation because the active Sandbox had no Android SDK path. Official command-line tools were checksum-verified and extracted to `/home/ubuntu/Android/Sdk/cmdline-tools/latest`, but API 35/build-tools were not installed. No physical device, live WhatsApp OTP, or live booking test was available.
+
+**Independent read-only security review found two hard blockers:** (1) `apps/api/api/v1/auth/register.ts` accepts a client-selected role, stores it only in server-private `phone_index.accountRole`, while `firebase/firestore.rules` permits a verified user to create a profile as either `patient` or `professional`; the profile role then drives patient/professional authorization. Bind roles to a trusted server-side claim/profile or make public registration patient-only, then add direct negative tests. (2) `apps/api/src/http.ts` falls back to localhost origins when `HOMIGO_ALLOWED_ORIGINS` is absent and does not validate origin syntax, while `/api/health` independently considers any non-empty string list configured. Use one fail-closed exact-origin validator for readiness and handlers; preserve no-Origin requests for native Android and reject malformed/unapproved browser origins. Add route tests. Do not merge/deploy until these are fixed.
+
+**External gaps:** the selected Firebase dev project's M2 rules are deployed after owner approval and pass emulator tests, but no live records were seeded. No real approved provider exists. WhatsApp gateway base URL/API key and sanitized success/failure verification response examples are still missing; no live OTP was tested. Six legacy Vercel projects remain tied to `rajahaider50/homigocare-mvp`; no fresh staging projects for the current repository have been created. No physical Android device test or end-to-end Google Sign-In has been performed. Do not claim approximately 70% completion for any product yet.
+
+The full ordered handoff, exact source paths, SDK command, security fixes, and acceptance steps are in [`NEXT_AI_HANDOFF_2026-10-11.md`](NEXT_AI_HANDOFF_2026-10-11.md). This update supersedes the older M1-only state entries above wherever they conflict. The final pushed PR head and CI run must be recorded after GitHub push; older successful PR checks do not cover this full M2 update.

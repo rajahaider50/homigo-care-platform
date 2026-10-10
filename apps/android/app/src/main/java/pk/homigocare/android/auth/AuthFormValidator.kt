@@ -12,4 +12,10 @@ object AuthFormValidator {
     }
 
     fun validateEmail(email: String): Boolean = emailPattern.matches(email.trim())
+
+    fun validatePhoneLogin(phoneDigits: String, password: String): String? {
+        if (!Regex("^3[0-9]{9}$").matches(phoneDigits)) return "Enter the 10-digit Pakistani mobile number linked to your account."
+        if (password.isBlank()) return "Enter your password."
+        return null
+    }
 }

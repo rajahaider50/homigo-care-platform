@@ -17,3 +17,8 @@ The live Firestore Data view showed no documents. The Firebase Console Rules edi
 ## CI result (2026-10-10)
 
 GitHub Actions [run 38057851529](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38057851529) passed the Firestore Rules Emulator suite along with Public/Admin checks. The live [Rules Console page](https://console.firebase.google.com/project/homigo-care-dev-20261010/firestore/databases/-default-/security/rules) did not render rule source, so no claim is made about an unseen revision. The last verified live state remains deny-all; no rules were changed or deployed. Keep the candidate rules gated on source review and explicit user approval.
+
+
+## M2 deployment update (2026-10-11)
+
+The owner later approved deployment of the expanded M2 rules to the development project `homigo-care-dev-20261010`. The Firebase CLI deployment completed successfully. The isolated Rules Emulator suite now passes **15/15**, including the M2 profile, professional-review, booking, bounded-admin-read, and deny-by-default cases. This supersedes the earlier “not deployed” state recorded above; those statements remain as historical records of the M1 review. Deployment changed rules only: no booking, profile, or synthetic user/provider records were written. Production project/rules remain out of scope.

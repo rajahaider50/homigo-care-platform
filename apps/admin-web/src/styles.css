@@ -89,3 +89,61 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+
+/* M2 operations surfaces: bounded queues and a truthful gateway status card. */
+.admin-password-field { position: relative; }
+.admin-password-field input { padding-right: 52px !important; }
+.admin-password-toggle { position: absolute; inset-block: 5px; inset-inline-end: 5px; width: 38px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; cursor: pointer; }
+.admin-password-toggle:hover { background: var(--hg-teal-50, #eaf5f3); }
+.admin-password-toggle:focus-visible { outline: 3px solid #91c9c1; outline-offset: 1px; }
+.admin-password-toggle img { width: 18px; height: 18px; opacity: .72; }
+.dashboard-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.dashboard-notice { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--hg-teal-100, #cce5e0); border-radius: 12px; background: var(--hg-teal-50, #eaf5f3); color: var(--hg-primary-dark, #14564f); font-size: 10px; line-height: 1.55; }
+.queue-panel { margin-top: 18px; padding: 20px; border: 1px solid var(--hg-divider, #dce8e5); border-radius: 18px; background: var(--hg-white, #fff); box-shadow: 0 14px 38px rgba(17, 66, 61, .04); }
+.queue-heading, .gateway-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 14px; }
+.queue-heading .eyebrow, .gateway-panel-heading .eyebrow { margin-bottom: 5px; }
+.queue-heading h3, .gateway-panel-heading h3 { margin: 0; color: var(--hg-primary-dark, #14564f); font-size: 18px; letter-spacing: -.03em; }
+.queue-count { padding: 6px 9px; border-radius: 99px; background: var(--hg-teal-50, #eaf5f3); color: var(--hg-primary-dark, #14564f); font-size: 9px; font-weight: 800; white-space: nowrap; }
+.queue-list, .booking-list { display: grid; gap: 9px; }
+.review-card, .booking-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px; border: 1px solid var(--hg-divider, #dce8e5); border-radius: 13px; background: #fcfdfd; }
+.review-card-main, .booking-card > div { display: grid; gap: 3px; min-width: 0; }
+.review-card-main strong, .booking-card strong { color: var(--hg-primary-dark, #14564f); font-size: 11px; }
+.review-card-main span, .booking-card span, .review-card-main small, .booking-card small { color: var(--hg-text-secondary-aa, #526764); font-size: 9px; line-height: 1.5; }
+.review-actions { display: flex; flex: 0 0 auto; gap: 6px; }
+.review-actions button { min-height: 34px; padding: 0 10px; border: 1px solid transparent; border-radius: 9px; font-size: 9px; font-weight: 800; cursor: pointer; }
+.review-actions button:disabled { cursor: not-allowed; opacity: .55; }
+.approve-button { background: #e5f5ed; color: #176642; }
+.reject-button { background: #fff0ed; color: #923d31; }
+.empty-state { margin: 0; padding: 16px; border: 1px dashed var(--hg-border, #c9d9d5); border-radius: 12px; color: var(--hg-text-secondary-aa, #526764); font-size: 10px; line-height: 1.6; }
+.status-pill { padding: 6px 9px; border-radius: 999px; background: #edf2f1; color: #35534f; font-size: 9px !important; font-weight: 800; white-space: nowrap; }
+.status-requested { background: #fff4da; color: #76540b; }
+.status-accepted { background: #e5f5ed; color: #176642; }
+.status-declined, .status-cancelled { background: #fff0ed; color: #923d31; }
+.status-completed { background: #e9eefb; color: #394c84; }
+.gateway-panel { margin-top: 18px; padding: 22px; border: 1px solid #24343a; border-radius: 19px; background: linear-gradient(155deg, #142229, #0d171c); color: #edf6f4; box-shadow: 0 16px 40px rgba(12, 23, 29, .12); }
+.gateway-panel-heading .eyebrow { color: #42c5a3; }
+.gateway-panel-heading h3 { color: #f1f8f6; }
+.gateway-status { padding: 7px 10px; border: 1px solid #294843; border-radius: 99px; background: #14312c; color: #70d6bb; font-size: 9px; font-weight: 800; white-space: nowrap; }
+.gateway-configuration_required { border-color: #5c4b2b; background: #30291b; color: #e5c77c; }
+.gateway-unreachable { border-color: #5b3432; background: #321f1e; color: #e6a59a; }
+.gateway-checking { border-color: #3a4b55; background: #202d33; color: #b7c8ca; }
+.gateway-explainer { max-width: 690px; margin: 0 0 15px; color: #a8b8ba; font-size: 10px; line-height: 1.65; }
+.gateway-sections { display: grid; gap: 9px; }
+.gateway-sections article { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 11px; padding: 13px; border: 1px solid #26383e; border-radius: 13px; background: rgba(255,255,255,.025); }
+.gateway-step { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 8px; background: #163b34; color: #5ed1af; font-size: 9px; font-weight: 800; }
+.gateway-sections strong { color: #ecf4f2; font-size: 10px; }
+.gateway-sections p { margin: 4px 0 9px; color: #96a9aa; font-size: 9px; line-height: 1.55; }
+.gateway-sections .quiet-button { min-height: 31px; padding-inline: 10px; border-color: #34464b; background: #17252a; color: #9badad; font-size: 8px; }
+.gateway-sections .quiet-button:disabled { cursor: not-allowed; opacity: .72; }
+
+@media (max-width: 600px) {
+  .dashboard-actions { width: 100%; }
+  .dashboard-actions .quiet-button { flex: 1; }
+  .queue-panel, .gateway-panel { padding: 15px; }
+  .review-card, .booking-card { align-items: flex-start; flex-direction: column; }
+  .review-actions { width: 100%; }
+  .review-actions button { flex: 1; }
+  .gateway-panel-heading { align-items: flex-start; flex-direction: column; }
+  .gateway-status { align-self: flex-start; }
+}

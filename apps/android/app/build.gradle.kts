@@ -8,6 +8,7 @@ plugins {
 android {
     namespace = "pk.homigocare.android"
     compileSdk = 35
+    val homigoApiBaseUrl = providers.environmentVariable("HOMIGO_API_BASE_URL").orElse("").get()
     defaultConfig {
         applicationId = "pk.homigocare.android"
         minSdk = 23
@@ -15,6 +16,7 @@ android {
         versionCode = 3
         versionName = "0.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "HOMIGO_API_BASE_URL", "\"$homigoApiBaseUrl\"")
     }
     signingConfigs {
         getByName("debug") {
@@ -42,6 +44,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.5")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
 
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth")

@@ -14,7 +14,9 @@ export type BrandIconName =
   | "refresh"
   | "alert-triangle"
   | "info"
-  | "user";
+  | "user"
+  | "eye"
+  | "eye-off";
 
 export function BrandIcon({ name, size = 24, className = "" }: {
   name: BrandIconName;

@@ -1,6 +1,8 @@
 # Feature-by-feature implementation audit
 
-Status: **M1 in progress**. Requirements are distinguished from implemented code; no feature is marked complete without actual build/test or integration evidence.
+> Historical M1 snapshot dated 2026-10-10. Current M2 implementation, verification, and blockers are recorded in [`NEXT_AI_HANDOFF_2026-10-11.md`](../NEXT_AI_HANDOFF_2026-10-11.md) and [`PROJECT_HISTORY_AND_CONTINUATION.md`](../PROJECT_HISTORY_AND_CONTINUATION.md); those newer records supersede rows below wherever status differs.
+
+Status: **Historical M1 baseline**. Requirements are distinguished from implemented code; no feature is marked complete without actual build/test or integration evidence.
 
 | Required feature | Authoritative source | Existing state | Missing work / dependency | Acceptance evidence | Status |
 |---|---|---|---|---|---|
