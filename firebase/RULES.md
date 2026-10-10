@@ -12,3 +12,8 @@ Before deployment, test both allowed and denied cases in the Firestore Rules val
 The candidate rules and isolated emulator tests were rechecked. The suite passes **8/8**, including anonymous profile read/list denial, patient profile-list denial, unverified-admin read/list denial, and denial of reads/writes under `patient_health_records`, `health_passports`, and `payments` even for an Admin claim. Test identities and attempted writes exist only in the isolated Emulator; no shared Firebase records were created.
 
 The live Firestore Data view showed no documents. The Firebase Console Rules editor did not render the active source during this check, and Firebase CLI has no authorized account in the Sandbox. The last verified live state remains production-mode deny-all. **No live rules were edited or deployed.** Continue to require review of the exact rules file and explicit user approval before any deployment; never enable public access or health/payment access as a shortcut.
+
+
+## CI result (2026-10-10)
+
+GitHub Actions [run 38057851529](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38057851529) passed the Firestore Rules Emulator suite along with Public/Admin checks. The live [Rules Console page](https://console.firebase.google.com/project/homigo-care-dev-20261010/firestore/databases/-default-/security/rules) did not render rule source, so no claim is made about an unseen revision. The last verified live state remains deny-all; no rules were changed or deployed. Keep the candidate rules gated on source review and explicit user approval.
