@@ -16,6 +16,17 @@ android {
         versionName = "0.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        getByName("debug") {
+            val homigoDevKeystorePath = System.getenv("HOMIGO_DEV_DEBUG_KEYSTORE")
+            if (!homigoDevKeystorePath.isNullOrBlank()) {
+                storeFile = rootProject.file(homigoDevKeystorePath)
+                storePassword = System.getenv("HOMIGO_DEV_DEBUG_STORE_PASSWORD") ?: "android"
+                keyAlias = System.getenv("HOMIGO_DEV_DEBUG_KEY_ALIAS") ?: "androiddebugkey"
+                keyPassword = System.getenv("HOMIGO_DEV_DEBUG_KEY_PASSWORD") ?: "android"
+            }
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
