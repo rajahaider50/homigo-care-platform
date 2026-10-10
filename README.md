@@ -26,11 +26,11 @@ A fresh, privacy-first MVP implementation with a native Android application and 
 
 4. Install the generated debug APK with Android Studio or `adb install -r app/build/outputs/apk/debug/app-debug.apk`.
 
-The debug SHA-1/SHA-256 have been registered for the Firebase development Android app. A separately signed release build still needs an owner-controlled release keystore; never send that key/password in chat.
+The debug SHA-1/SHA-256 were registered on the previous development Android app, not on the new project yet. Register the `pk.homigocare.android` app and its fingerprints on the new development project before expecting Android sign-in to work. A separately signed release build still needs an owner-controlled release keystore; never send that key/password in chat.
 
 ## Firebase development project
 
-The local CLI context in `firebase/.firebaserc` targets `homigo-care-dev-76e21`. The Firestore schema starts with a verified user's private `profiles/{uid}` record; all other collections deny by default until their phase-specific rules are implemented. Rules are validated before deployment. The exact rule payload will be reviewed before applying any permission change. No database reset or fake account seeding is allowed.
+The local CLI context in `firebase/.firebaserc` targets the newly created development project `homigo-care-dev-20261010`; the production alias remains `homigo-care-76e21`. The new project is on Firebase Spark, with Analytics and Gemini disabled. Its Firestore database has not been created because the region is permanent and is awaiting owner selection. Existing Firebase projects remain untouched. The Firestore schema starts with a verified user's private `profiles/{uid}` record; all other collections deny by default until their phase-specific rules are implemented. Rules are validated before deployment. The exact rule payload will be reviewed before applying any permission change. No database reset or fake account seeding is allowed.
 
 ## Web environment
 

@@ -3,7 +3,8 @@
 ## Firebase projects
 
 - Production: `homigo-care-76e21`
-- Development: `homigo-care-dev-76e21`
+- Previous development project: `homigo-care-dev-76e21`
+- Current development project: `homigo-care-dev-20261010`
 - Android package: `pk.homigocare.android`
 
 ## Development signing fingerprints
@@ -15,7 +16,7 @@ The development Android app uses separate keys from production to avoid Firebase
 - Dev Release SHA-1: `DF:8B:ED:09:D6:AE:7E:A4:25:45:E3:59:1F:22:0A:9C:9F:1F:92:50`
 - Dev Release SHA-256: `08:25:65:E9:68:35:87:DC:CA:6A:FA:10:C2:21:C3:D2:34:82:06:A4:6E:17:F1:B9:2A:88:E4:7A:9F:24:EA:5F`
 
-All four development fingerprints were registered on the Firebase development Android app.
+All four fingerprints below were registered on the previous development Android app (`homigo-care-dev-76e21`). The new project (`homigo-care-dev-20261010`) still needs its Android app registration and fingerprint setup before Android sign-in can be tested there.
 
 ## Media storage
 

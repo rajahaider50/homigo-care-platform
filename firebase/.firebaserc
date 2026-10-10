@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "homigo-care-dev-76e21",
-    "dev": "homigo-care-dev-76e21",
+    "default": "homigo-care-dev-20261010",
+    "dev": "homigo-care-dev-20261010",
     "prod": "homigo-care-76e21"
   }
 }
