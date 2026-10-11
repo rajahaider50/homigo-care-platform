@@ -61,3 +61,10 @@ GitHub Actions `38108324820` for `83d490f` completed overall success. Web and Ru
 The earlier `BUILDING` notes are superseded. Both follow-up Vercel previews for `c7832ca` are READY: Public alias `homigo-care-public-git-fix-android-auth-reg-1f2b37-rajahaider50.vercel.app` and Admin alias `homigo-care-admin-git-fix-android-auth-regi-b36779-rajahaider50.vercel.app`. The Public project has SSO protection set to `all`, so it is not anonymously accessible pending approval/deployment of the updated role-claim Firestore rules. The Admin stable alias `https://homigo-care-admin.vercel.app/` serves only the verified-email/Admin-claim login screen; the c7832ca preview includes the corrected rules-status footer.
 
 PR #1 was merged by the GitHub repository owner into `fresh-rebuild` (merge commit `3617e987c4b482bbe365a04c1672a2d9713198b0`). The agent did not merge it. Follow-up PR #2 is open in Draft for the subsequent footer/handoff correction; CI was not fully complete at the last check. Do not represent its pending CI as green.
+
+
+## Superseding final checkpoint — 2026-10-11 08:34 UTC
+
+PR #2 was merged by GitHub owner `rajahaider50` into `fresh-rebuild` (merge commit `e1708dcd505584ee898877b3b251186721a78195`); the agent did not merge. Latest CI run `38108697367` completed success: Web and Rules passed; Android job skipped SDK/native build/signature/APK upload because protected `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` was unavailable. The local APK remains a separate debug artifact with a signer mismatch.
+
+At last deployment check, the newest `fresh-rebuild` Admin Vercel deployment was READY; Public was still BUILDING. The stable Admin URL `https://homigo-care-admin.vercel.app/` returned 200 and displayed only the verified Admin-claim login screen, but its footer still appeared to be the older wording. Public remains SSO protected for all deployments; no anonymous access has been opened. Feature previews from `b8657a7` were READY. Corrected Firebase role-claim rules remain not deployed; owner review/approval is still required.
