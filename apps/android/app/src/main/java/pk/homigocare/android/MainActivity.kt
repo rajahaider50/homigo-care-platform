@@ -484,9 +484,14 @@ class MainActivity : ComponentActivity() {
                                         loading = false
                                         message = "Google sign-in was cancelled."
                                         messageIsError = true
-                                    } catch (_: Exception) {
+                                    } catch (error: Exception) {
                                         loading = false
-                                        message = "Google sign-in could not be completed. Check your connection and try again."
+                                        val detail = error.message?.trim()?.takeIf { it.isNotEmpty() }
+                                        message = if (detail == null) {
+                                            "Google sign-in could not be completed. Check Google Play services, Firebase configuration, and your connection, then try again."
+                                        } else {
+                                            "Google sign-in could not be completed: $detail"
+                                        }
                                         messageIsError = true
                                     }
                                 }

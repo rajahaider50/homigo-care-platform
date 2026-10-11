@@ -12,7 +12,8 @@
 - OTP proof security: server-side signing secret and Firestore-backed rate limiting configured.
 - Public/Admin Vercel environment values: Firebase Web config and API base URL are present for production/preview.
 - Android: `lint`, `testDebugUnitTest`, and `assembleDebug` passed locally.
-- Android artifact: `artifacts/homigo-care-debug-v0.3.0.apk` is a debug APK for development testing only.
+- Android Google Sign-In: current debug keystore SHA-1/SHA-256 were registered in Firebase; a fresh `google-services.json` was generated for the Android app.
+- Android artifact: `artifacts/homigo-care-debug-v0.3.1.apk` is a debug APK for development testing only.
 - Admin web: Google sign-in button added; custom `admin:true` claim remains enforced before Firestore reads.
 - Public web: stale “gateway pending” copy replaced with live OTP readiness messaging.
 
@@ -35,3 +36,11 @@ These are implementation estimates, not a claim that every MVP feature is comple
 2. No physical Android device was attached, so real Google OAuth and WhatsApp delivery were not claimed as device-tested.
 3. Sending a real OTP is an external message action; the code is enabled but no unsolicited test message was sent during this update.
 4. Health Passport, persistent SOS, payments, audit history and complete professional operations are later milestones.
+
+## Android follow-up — 2026-10-11
+
+- Firebase Android app: `pk.homigocare.android`.
+- Current local debug SHA-1 and SHA-256 are registered alongside the existing development fingerprints.
+- APK `0.3.1` built successfully with the refreshed Firebase config.
+- Android OTP client sends the accepted 10-digit number format and parses the API's `{verified: true, proof, number}` response; the backend gateway success-shape fix is deployed.
+- Real-device Google/OTP smoke testing still requires the APK to be installed on a device with Google Play services. No physical device is attached to this sandbox.
