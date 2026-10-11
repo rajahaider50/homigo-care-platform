@@ -35,6 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ...(user.customClaims ?? {}),
       whatsapp_verified: true,
       whatsapp_number: proof.number,
+      account_role: role,
     });
     await services.db.collection("phone_index").doc(phoneHash).update({ accountRole: role, status: "active" });
     return res.status(201).json({ created: true, uid: user.uid, role });

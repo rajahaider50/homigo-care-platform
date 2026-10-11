@@ -1,14 +1,45 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
+export type OriginConfig = { configured: boolean; origins: string[] };
+
+/** Parse exact HTTPS origins; HTTP is allowed only for explicit loopback development origins. */
+export function readAllowedOrigins(raw = process.env.HOMIGO_ALLOWED_ORIGINS): OriginConfig {
+  if (typeof raw !== "string" || raw.trim() === "") return { configured: false, origins: [] };
+  const entries = raw.split(",").map((item) => item.trim());
+  if (entries.length === 0 || entries.some((item) => item === "")) return { configured: false, origins: [] };
+  const origins: string[] = [];
+  for (const entry of entries) {
+    try {
+      const url = new URL(entry);
+      const isLoopback = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+      if (url.origin !== entry || url.username || url.password || url.pathname !== "/" || url.search || url.hash) {
+        return { configured: false, origins: [] };
+      }
+      const allowLoopbackHttp = process.env.NODE_ENV !== "production" && url.protocol === "http:" && isLoopback;
+      if (url.protocol !== "https:" && !allowLoopbackHttp) {
+        return { configured: false, origins: [] };
+      }
+      origins.push(entry);
+    } catch {
+      return { configured: false, origins: [] };
+    }
+  }
+  return { configured: origins.length > 0, origins: [...new Set(origins)] };
+}
+
 export function applyCors(req: VercelRequest, res: VercelResponse, methods = "POST, OPTIONS"): "continue" | "handled" {
   const rawOrigin = req.headers.origin;
   if (typeof rawOrigin !== "string" || rawOrigin.length === 0) {
     if (req.method === "OPTIONS") { res.status(204).end(); return "handled"; }
+    // Native Android requests do not send a browser Origin header.
     return "continue";
   }
-  const allowed = (process.env.HOMIGO_ALLOWED_ORIGINS ?? "http://localhost:5173,http://localhost:5174,http://localhost:4173,http://localhost:4174")
-    .split(",").map((origin) => origin.trim()).filter(Boolean);
-  if (!allowed.includes(rawOrigin)) {
+  const config = readAllowedOrigins();
+  if (!config.configured) {
+    res.status(503).json({ error: "The secure API origin allowlist is not configured." });
+    return "handled";
+  }
+  if (!config.origins.includes(rawOrigin)) {
     res.status(403).json({ error: "This website is not allowed to use the HomiGo API." });
     return "handled";
   }

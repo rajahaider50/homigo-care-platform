@@ -60,7 +60,8 @@ service cloud.firestore {
         && request.resource.data.displayName is string
         && request.resource.data.displayName.size() >= 2
         && request.resource.data.displayName.size() <= 80
-        && request.resource.data.role in ['patient', 'professional']
+        && request.auth.token.account_role in ['patient', 'professional']
+        && request.resource.data.role == request.auth.token.account_role
         && validPhone(request.resource.data.phoneNumber)
         && request.resource.data.phoneNumber == request.auth.token.whatsapp_number
         && request.resource.data.createdAt == request.time

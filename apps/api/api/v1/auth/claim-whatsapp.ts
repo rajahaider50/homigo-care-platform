@@ -18,14 +18,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const identity = await services.auth.verifyIdToken(idToken, true);
     if (identity.email_verified !== true || !identity.email) return res.status(403).json({ error: "Verify the account email before linking WhatsApp." });
     const user = await services.auth.getUser(identity.uid);
+    const existingRole = user.customClaims?.account_role;
+    const accountRole = existingRole === "professional" ? "professional" : "patient";
     const phoneHash = await consumeWhatsAppProof(services.db, proof, proofSecret, identity.uid, identity.email);
     try {
       await services.auth.setCustomUserClaims(identity.uid, {
         ...(user.customClaims ?? {}),
         whatsapp_verified: true,
         whatsapp_number: proof.number,
+        account_role: accountRole,
       });
-      await services.db.collection("phone_index").doc(phoneHash).update({ status: "active" });
+      await services.db.collection("phone_index").doc(phoneHash).update({ accountRole, status: "active" });
     } catch {
       await services.db.collection("phone_index").doc(phoneHash).delete().catch(() => undefined);
       return res.status(503).json({ error: "The verified number could not be linked securely." });

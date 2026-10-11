@@ -51,12 +51,13 @@ beforeEach(async () => {
   });
 });
 
-function userDb(uid, { verified = true, whatsappVerified = true, admin = false, phone = patientPhone } = {}) {
+function userDb(uid, { verified = true, whatsappVerified = true, admin = false, phone = patientPhone, accountRole = "patient" } = {}) {
   const claims = {
     email: `${uid}@example.test`,
     email_verified: verified,
     whatsapp_verified: whatsappVerified,
     whatsapp_number: phone,
+    account_role: accountRole,
     ...(admin ? { admin: true } : {}),
   };
   return testEnvironment.authenticatedContext(uid, claims).firestore();
@@ -192,12 +193,20 @@ test("unverified Admin claim cannot read or list profiles", async () => {
 });
 
 test("professional registration creates a pending profile and cannot self-approve", async () => {
-  const db = userDb("professional-new");
+  const db = userDb("professional-new", { accountRole: "professional" });
   await assertSucceeds(setDoc(doc(db, "profiles", "professional-new"), profileDraft("professional-new", { role: "professional" })));
   const profile = doc(db, "professional_profiles", "professional-new");
   await assertSucceeds(setDoc(profile, professionalDraft("professional-new")));
   await assertFails(updateDoc(profile, { status: "approved", updatedAt: serverTimestamp() }));
   await assertFails(updateDoc(profile, { licenseNumber: "private-test-value", updatedAt: serverTimestamp() }));
+});
+
+test("profile role cannot differ from the server-issued account_role claim", async () => {
+  const patient = userDb("role-mismatch-patient", { accountRole: "patient" });
+  await assertFails(setDoc(doc(patient, "profiles", "role-mismatch-patient"), profileDraft("role-mismatch-patient", { role: "professional" })));
+  const professional = userDb("role-mismatch-professional", { accountRole: "professional" });
+  await assertFails(setDoc(doc(professional, "profiles", "role-mismatch-professional"), profileDraft("role-mismatch-professional", { role: "patient" })));
+  await assertSucceeds(setDoc(doc(professional, "profiles", "role-mismatch-professional"), profileDraft("role-mismatch-professional", { role: "professional" })));
 });
 
 test("patients can discover only approved professionals; Admin can review pending professionals", async () => {

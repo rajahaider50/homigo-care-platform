@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { readGatewayConfig } from "../src/gateway.js";
 import { getAdminServices } from "../src/firebase-admin.js";
-import { applyCors } from "../src/http.js";
+import { applyCors, readAllowedOrigins } from "../src/http.js";
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
   if (applyCors(req, res, "GET, OPTIONS") === "handled") return;
@@ -10,8 +10,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
   const firebaseAdminConfigured = getAdminServices() !== null;
   const identityToolkitConfigured = Boolean(process.env.FIREBASE_WEB_API_KEY?.trim());
   const proofSecretConfigured = Buffer.byteLength(process.env.OTP_PROOF_SECRET?.trim() ?? "", "utf8") >= 32;
-  const allowedOriginsConfigured = (process.env.HOMIGO_ALLOWED_ORIGINS ?? "")
-    .split(",").map((origin) => origin.trim()).filter(Boolean).length > 0;
+  const allowedOriginsConfigured = readAllowedOrigins().configured;
   const ready = gatewayConfigured && firebaseAdminConfigured && identityToolkitConfigured && proofSecretConfigured && allowedOriginsConfigured;
   return res.status(ready ? 200 : 503).json({
     status: ready ? "ready" : "configuration_required",

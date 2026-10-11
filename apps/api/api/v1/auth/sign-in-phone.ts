@@ -40,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const phoneHash = phoneIndexId(number.value, proofSecret);
     const phoneSnapshot = await services.db.collection("phone_index").doc(phoneHash).get();
     const mapping = phoneSnapshot.data();
-    if (!phoneSnapshot.exists || mapping?.status !== "active" || typeof mapping.email !== "string" || typeof mapping.uid !== "string") {
+    if (!phoneSnapshot.exists || mapping?.status !== "active" || !["patient", "professional"].includes(mapping?.accountRole) || typeof mapping.email !== "string" || typeof mapping.uid !== "string") {
       return res.status(401).json({ error: GENERIC_FAILURE });
     }
 
@@ -67,7 +67,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(401).json({ error: GENERIC_FAILURE });
     }
     const account = await services.auth.getUser(identity.uid);
-    if (account.customClaims?.whatsapp_verified !== true || account.customClaims?.whatsapp_number !== number.value) {
+    if (account.customClaims?.whatsapp_verified !== true || account.customClaims?.whatsapp_number !== number.value || account.customClaims?.account_role !== mapping.accountRole) {
       return res.status(401).json({ error: GENERIC_FAILURE });
     }
 

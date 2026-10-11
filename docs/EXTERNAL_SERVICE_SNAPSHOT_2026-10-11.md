@@ -39,3 +39,11 @@ Source: user-provided screenshot and accompanying note.
 - Official contract: [Google Identity Platform `accounts.signInWithPassword`](https://docs.cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithPassword), read 2026-10-11.
 - The documented method is `POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword`; its request supports `email`, `password`, and `returnSecureToken`, and a successful response includes `idToken` and `localId`.
 - HomiGo's server maps a user-entered verified phone to a private HMAC-indexed email, asks the official Firebase Identity API to verify the password, validates the returned ID token with Firebase Admin, discards that ID token, and returns only a Firebase custom token to the client. This keeps email lookup and upstream tokens off the client; it requires a matching Firebase Web API key as server configuration.
+
+
+## Superseding update — 2026-10-11 08:24 UTC
+
+- **Firebase rules:** local rules now bind profile role to the Firebase `account_role` custom claim; Emulator is 16/16. This changed rules file has not been redeployed. Obtain explicit owner review/approval, then deploy and verify it before public application deployment. Existing dev M2 rules deployment remains the older revision.
+- **Vercel:** two new projects are linked to `rajahaider50/homigo-care-platform`: `homigo-care-public` (root `apps/public-web`) and `homigo-care-admin` (root `apps/admin-web`). Public Firebase Web config and official brand URL are set for Production/Preview. No deployment exists yet; production branch is `fresh-rebuild`, and default SSO protection remains enabled. Public links are not yet available. No project under `homigocareo-mvp` was edited.
+- **Android:** SDK/lint/unit/debug assemble succeeded. A 15,976,972-byte debug APK was copied to `/home/ubuntu/HomiGoCare-debug-2026-10-11.apk` (SHA-256 `03cd1ec4da33ffee03db2d059a96508d7cd559d5bc98b052e098cca7975231d2`). The local default debug signer does not match the registered dev signer fingerprints checked in this session; no Android device test occurred. The APK build did not have the shared API base URL.
+- **WhatsApp/API:** no live gateway/API deployment or OTP. Gateway credentials and API runtime configuration remain unavailable; browser OTP readiness must remain blocked honestly.

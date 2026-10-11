@@ -33,11 +33,11 @@ function request(body: unknown): VercelRequest {
 }
 
 function configureAccount() {
-  const account = { uid: "uid-test", email: "demo@example.test", status: "active" };
+  const account = { uid: "uid-test", email: "demo@example.test", status: "active", accountRole: "patient" };
   const db = { collection: vi.fn(() => ({ doc: vi.fn(() => ({ get: vi.fn(async () => ({ exists: true, data: () => account })) })) })) };
   const auth = {
     verifyIdToken: vi.fn(async () => ({ uid: account.uid, email_verified: true })),
-    getUser: vi.fn(async () => ({ customClaims: { whatsapp_verified: true, whatsapp_number: "+923495031007" } })),
+    getUser: vi.fn(async () => ({ customClaims: { whatsapp_verified: true, whatsapp_number: "+923495031007", account_role: "patient" } })),
     createCustomToken: vi.fn(async () => "firebase-custom-token"),
   };
   mocks.getAdminServices.mockReturnValue({ db, auth });
