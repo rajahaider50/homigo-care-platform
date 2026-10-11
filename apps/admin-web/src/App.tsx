@@ -179,7 +179,7 @@ export default function App() {
             <p className="no-signup-note">There is no public Admin registration or client-side role assignment.</p>
           </section>
         )}
-        <footer className="content-footer">Current development rules are emulator-tested. Updated role-claim rules await owner approval before deployment. This restricted console is not a production care system.</footer>
+        <footer className="content-footer">Development rules are emulator-tested and deployed to the selected Firebase development project. This restricted console is not a production care system.</footer>
       </section>
     </main>
   );

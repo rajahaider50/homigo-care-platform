@@ -8,7 +8,11 @@ plugins {
 android {
     namespace = "pk.homigocare.android"
     compileSdk = 35
-    val homigoApiBaseUrl = providers.environmentVariable("HOMIGO_API_BASE_URL").orElse("").get()
+    // Keep the deployable development endpoint usable for a normal APK while allowing
+    // CI/release builds to override it with HOMIGO_API_BASE_URL.
+    val homigoApiBaseUrl = providers.environmentVariable("HOMIGO_API_BASE_URL")
+        .orElse("https://homigo-care-api-rajahaider50.vercel.app")
+        .get()
     defaultConfig {
         applicationId = "pk.homigocare.android"
         minSdk = 23
