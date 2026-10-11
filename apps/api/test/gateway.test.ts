@@ -16,8 +16,10 @@ describe("gateway relay", () => {
 
   it("verifies only an explicit success response and fails closed for unknown bodies", async () => {
     const good = vi.fn(async () => Response.json({ verified: true }));
+    const ok = vi.fn(async () => Response.json({ ok: true }));
     const bad = vi.fn(async () => Response.json({ message: "ok" }));
     expect(await verifyOtp(config, "+923495031007", "123456", good as typeof fetch)).toEqual({ ok: true });
+    expect(await verifyOtp(config, "+923495031007", "123456", ok as typeof fetch)).toEqual({ ok: true });
     expect(good).toHaveBeenCalledWith("https://gateway.example.test/api/v1/verify-otp", expect.objectContaining({
       body: JSON.stringify({ number: "923495031007", otp: "123456" }),
     }));

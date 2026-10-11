@@ -35,7 +35,7 @@ export async function sendOtp(config: GatewayConfig, number: string, fetcher: Fe
 function isExplicitVerified(body: unknown): boolean {
   if (!body || typeof body !== "object") return false;
   const data = body as Record<string, unknown>;
-  if (data.verified === true || data.valid === true || data.success === true) return true;
+  if (data.ok === true || data.verified === true || data.valid === true || data.success === true) return true;
   return typeof data.status === "string" && ["verified", "valid", "success"].includes(data.status.toLowerCase());
 }
 
