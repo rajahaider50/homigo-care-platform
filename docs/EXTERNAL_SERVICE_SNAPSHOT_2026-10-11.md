@@ -47,3 +47,10 @@ Source: user-provided screenshot and accompanying note.
 - **Vercel:** two new projects are linked to `rajahaider50/homigo-care-platform`: `homigo-care-public` (root `apps/public-web`) and `homigo-care-admin` (root `apps/admin-web`). Public Firebase Web config and official brand URL are set for Production/Preview. No deployment exists yet; production branch is `fresh-rebuild`, and default SSO protection remains enabled. Public links are not yet available. No project under `homigocareo-mvp` was edited.
 - **Android:** SDK/lint/unit/debug assemble succeeded. A 15,976,972-byte debug APK was copied to `/home/ubuntu/HomiGoCare-debug-2026-10-11.apk` (SHA-256 `03cd1ec4da33ffee03db2d059a96508d7cd559d5bc98b052e098cca7975231d2`). The local default debug signer does not match the registered dev signer fingerprints checked in this session; no Android device test occurred. The APK build did not have the shared API base URL.
 - **WhatsApp/API:** no live gateway/API deployment or OTP. Gateway credentials and API runtime configuration remain unavailable; browser OTP readiness must remain blocked honestly.
+
+
+## Post-push status — 2026-10-11 08:29 UTC
+
+The previous note that no deployments existed is superseded: Git integration automatically started two Production-target builds for feature SHA `83d490f`. Admin is READY at `https://homigo-care-admin.vercel.app/`; an anonymous browser walkthrough showed only the existing verified Admin-claim sign-in gate. Public was still BUILDING at the last Vercel check; its project's SSO protection is now set to `all` until the revised Firestore rules receive owner approval and are deployed. The Admin page still has a stale footer in the built deployment; a truthful text correction is local and awaits the next push/deployment.
+
+GitHub Actions `38108324820` for `83d490f` completed overall success. Web and Rules checks passed. Android CI validated configuration but skipped SDK/native build/signature verification/APK upload because protected secret `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` was absent. A separate local debug APK exists but its signer did not match the Firebase-registered dev signer checked here.
