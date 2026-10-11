@@ -54,3 +54,10 @@ Source: user-provided screenshot and accompanying note.
 The previous note that no deployments existed is superseded: Git integration automatically started two Production-target builds for feature SHA `83d490f`. Admin is READY at `https://homigo-care-admin.vercel.app/`; an anonymous browser walkthrough showed only the existing verified Admin-claim sign-in gate. Public was still BUILDING at the last Vercel check; its project's SSO protection is now set to `all` until the revised Firestore rules receive owner approval and are deployed. The Admin page still has a stale footer in the built deployment; a truthful text correction is local and awaits the next push/deployment.
 
 GitHub Actions `38108324820` for `83d490f` completed overall success. Web and Rules checks passed. Android CI validated configuration but skipped SDK/native build/signature verification/APK upload because protected secret `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64` was absent. A separate local debug APK exists but its signer did not match the Firebase-registered dev signer checked here.
+
+
+## Current override — 2026-10-11 08:31 UTC
+
+The earlier `BUILDING` notes are superseded. Both follow-up Vercel previews for `c7832ca` are READY: Public alias `homigo-care-public-git-fix-android-auth-reg-1f2b37-rajahaider50.vercel.app` and Admin alias `homigo-care-admin-git-fix-android-auth-regi-b36779-rajahaider50.vercel.app`. The Public project has SSO protection set to `all`, so it is not anonymously accessible pending approval/deployment of the updated role-claim Firestore rules. The Admin stable alias `https://homigo-care-admin.vercel.app/` serves only the verified-email/Admin-claim login screen; the c7832ca preview includes the corrected rules-status footer.
+
+PR #1 was merged by the GitHub repository owner into `fresh-rebuild` (merge commit `3617e987c4b482bbe365a04c1672a2d9713198b0`). The agent did not merge it. Follow-up PR #2 is open in Draft for the subsequent footer/handoff correction; CI was not fully complete at the last check. Do not represent its pending CI as green.
