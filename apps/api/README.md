@@ -35,7 +35,7 @@ The Admin SDK initializer intentionally refuses a service account for any projec
 
 ## Current integration boundary
 
-The Firebase development project and Web/Android client SDK configs are connected locally, and the tested Firestore rules have been deployed to the selected development project. The gateway base URL, gateway API key, and a sanitized verify response example have not been supplied. No Firebase Admin service-account runtime credential or OTP proof secret has been provisioned in Vercel. Therefore live send/verify, proof-backed account creation, and phone-number sign-in are not yet configured. Local API tests use synthetic values and mocked upstream responses. Rate-limited OTP, bot pairing, direct chat, and changing gateway-side settings still require the exact gateway API contract; do not invent endpoints.
+The Firebase development project and Web/Android client SDK configs are connected, the tested Firestore rules are released to the selected development project, and the API is live on Vercel. The gateway base URL, gateway key, Firebase Admin service account, and OTP proof secret are stored server-side in sensitive Vercel variables. The live health endpoint reports Firebase Admin, Identity Toolkit, OTP gateway, proof signing, and allowed origins as ready. Local API tests still use synthetic values and mocked upstream responses; no unsolicited real OTP was sent during this update. Rate-limited OTP, bot pairing, direct chat, and changing gateway-side settings remain outside this adapter's contract.
 
 ## External protocol reference
 

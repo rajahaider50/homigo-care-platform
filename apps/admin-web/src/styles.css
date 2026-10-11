@@ -42,6 +42,9 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid 
 .primary-button { min-height: 48px; margin-top: 5px; padding: 0 18px; border: 0; border-radius: 12px; background: var(--hg-primary, #1b6b63); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; transition: background .18s ease, transform .18s ease; }
 .primary-button:hover:not(:disabled) { transform: translateY(-1px); background: var(--hg-primary-dark, #14564f); }
 .primary-button:disabled, .quiet-button:disabled { cursor: not-allowed; opacity: .6; }
+.secondary-button { min-height: 46px; margin-top: 10px; width: 100%; padding: 0 18px; border: 1px solid var(--hg-border, #c9d9d5); border-radius: 12px; background: #fff; color: var(--hg-primary-dark, #14564f); font-size: 12px; font-weight: 700; cursor: pointer; }
+.secondary-button:hover:not(:disabled) { background: var(--hg-teal-50, #eaf5f3); }
+.secondary-button:disabled { cursor: not-allowed; opacity: .6; }
 .notice { margin: 17px 0 0; padding: 12px 14px; border: 1px solid #f3d2c9; border-radius: 12px; background: #fff2ee; color: #883f30; font-size: 11px; line-height: 1.55; }
 .no-signup-note { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--hg-divider, #dce8e5); color: var(--hg-text-secondary-aa, #526764); font-size: 9px; line-height: 1.6; }
 .loader-mark { width: 40px; height: 40px; margin-bottom: 24px; border: 3px solid var(--hg-teal-100, #cce5e0); border-top-color: var(--hg-primary, #1b6b63); border-radius: 50%; animation: spin .8s linear infinite; }

@@ -1,9 +1,11 @@
 import { useEffect, useState, type FormEvent } from "react";
 import {
+  GoogleAuthProvider,
   getIdTokenResult,
   onAuthStateChanged,
   reload,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   type User,
 } from "firebase/auth";
@@ -111,6 +113,23 @@ export default function App() {
     }
   }
 
+  async function handleGoogleSignIn() {
+    if (!auth) return;
+    setNotice("");
+    setAccessStatus("checking");
+    setBusy(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      await signInWithPopup(auth, provider);
+    } catch {
+      setAccessStatus("signed-out");
+      setNotice("Google sign-in could not be completed. Check popup permission and try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleSignOut() {
     if (!auth) return;
     setBusy(true);
@@ -176,6 +195,7 @@ export default function App() {
               </label>
               <button className="primary-button" disabled={busy || !auth} type="submit">{busy ? "Signing in…" : "Sign in securely"}</button>
             </form>
+            <button className="secondary-button" disabled={busy || !auth} onClick={() => void handleGoogleSignIn()} type="button">Continue with Google</button>
             <p className="no-signup-note">There is no public Admin registration or client-side role assignment.</p>
           </section>
         )}

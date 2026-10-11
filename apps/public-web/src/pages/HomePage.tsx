@@ -20,7 +20,7 @@ export function HomePage() {
               <Link className="button button-primary" to="/auth">Patient access <BrandIcon name="arrow-right" size={18} /></Link>
               <Link className="button button-outline" to="/care">Explore My Care</Link>
             </div>
-            <p className="hero-footnote"><BrandIcon name="lock" size={16} /> New account registration needs WhatsApp OTP; gateway setup is pending.</p>
+            <p className="hero-footnote"><BrandIcon name="lock" size={16} /> New account registration uses live server-side WhatsApp OTP verification.</p>
           </div>
 
           <div className="hero-visual" aria-label="HomiGo Care brand illustration">
@@ -41,8 +41,8 @@ export function HomePage() {
 
       <section className="trust-strip" aria-label="Development capabilities">
         <div className="page-container trust-strip-inner">
-          <div><BrandIcon name="shield-check" size={22} /><span><strong>Email and Google sign-in</strong><small>New registration awaits WhatsApp gateway setup</small></span></div>
-          <div><BrandIcon name="user" size={22} /><span><strong>Provider discovery and bookings</strong><small>Uses approved profiles and deployed dev rules</small></span></div>
+          <div><BrandIcon name="shield-check" size={22} /><span><strong>Email and Google sign-in</strong><small>Firebase verification and password recovery are connected</small></span></div>
+          <div><BrandIcon name="user" size={22} /><span><strong>Provider discovery and bookings</strong><small>Uses approved profiles and deployed development rules</small></span></div>
           <div><BrandIcon name="info" size={22} /><span><strong>Clear development limits</strong><small>No health records, payments, or emergency dispatch</small></span></div>
         </div>
       </section>
@@ -66,9 +66,9 @@ export function HomePage() {
 
       <section className="steps-section" id="how-it-works">
         <div className="page-container steps-inner">
-          <div className="steps-intro"><p className="eyebrow">THE FIRST VERTICAL SLICE</p><h2>From verified access to a visit request.</h2><p>The discovery and booking workflow reads live development data only. WhatsApp OTP must be configured before new patients can complete registration.</p></div>
+        <div className="steps-intro"><p className="eyebrow">THE FIRST VERTICAL SLICE</p><h2>From verified access to a visit request.</h2><p>The discovery and booking workflow reads live development data only. New patients are protected by server-side WhatsApp OTP verification.</p></div>
           <ol className="steps-list">
-            <li><span>01</span><div><h3>Sign in or verify an account</h3><p>Email and Google sign-in are wired; WhatsApp OTP setup is still pending for new registrations.</p></div></li>
+            <li><span>01</span><div><h3>Sign in or verify an account</h3><p>Email and Google sign-in are wired; new registration requires a live WhatsApp OTP proof.</p></div></li>
             <li><span>02</span><div><h3>Browse approved professionals</h3><p>Only Admin-approved profiles appear. The app does not invent or seed provider records.</p></div></li>
             <li><span>03</span><div><h3>Request a development visit</h3><p>A booking request can be created for an approved professional; it is not a confirmed clinical appointment.</p></div></li>
           </ol>
