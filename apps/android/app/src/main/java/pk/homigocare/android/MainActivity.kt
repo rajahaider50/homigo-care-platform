@@ -44,10 +44,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import pk.homigocare.android.api.HomigoApiClient
 import pk.homigocare.android.auth.AuthFormValidator
+import pk.homigocare.android.auth.AuthFlowPolicy
 import pk.homigocare.android.auth.AuthRepository
 import pk.homigocare.android.auth.AuthScreen
 import pk.homigocare.android.auth.EmailNotVerifiedException
+import pk.homigocare.android.auth.WhatsAppLinkScreen
+import pk.homigocare.android.care.PatientCareRepository
+import pk.homigocare.android.care.PatientCareScreen
 import pk.homigocare.android.designsystem.HomiGoSplashScreen
 import pk.homigocare.android.designsystem.icons.HgIcon
 import pk.homigocare.android.designsystem.icons.HgIconImage
@@ -63,6 +69,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val auth = AuthRepository(FirebaseAuth.getInstance())
         val profiles = PatientProfileRepository()
+        val careRepository = PatientCareRepository()
         setContent {
             HomiGoTheme {
                 var showSplash by remember { mutableStateOf(true) }
@@ -77,12 +84,21 @@ class MainActivity : ComponentActivity() {
                 var profileLoading by remember { mutableStateOf(initialUser?.isEmailVerified == true) }
                 var profileError by remember { mutableStateOf<String?>(null) }
                 var isSignUp by remember { mutableStateOf(false) }
+                var phoneLogin by remember { mutableStateOf(false) }
                 var name by remember { mutableStateOf("") }
                 var email by remember { mutableStateOf("") }
                 var password by remember { mutableStateOf("") }
                 var loading by remember { mutableStateOf(false) }
                 var message by remember { mutableStateOf<String?>(null) }
                 var messageIsError by remember { mutableStateOf(true) }
+                var phoneDigits by remember { mutableStateOf("") }
+                var otpCode by remember { mutableStateOf("") }
+                var otpSent by remember { mutableStateOf(false) }
+                var otpProof by remember { mutableStateOf<HomigoApiClient.OtpProof?>(null) }
+                var otpMessage by remember { mutableStateOf<String?>(null) }
+                var otpMessageIsError by remember { mutableStateOf(false) }
+                var needsWhatsAppVerification by remember { mutableStateOf(false) }
+                var showCareScreen by remember { mutableStateOf(false) }
 
                 LaunchedEffect(currentUser?.uid) {
                     val user = currentUser
@@ -93,11 +109,121 @@ class MainActivity : ComponentActivity() {
                     } else {
                         profileLoading = true
                         profileError = null
-                        profiles.ensurePatientProfile(user) { result ->
-                            result.fold(
-                                onSuccess = { patientProfile = it; profileError = null; profileLoading = false },
-                                onFailure = { patientProfile = null; profileError = it.message ?: "Your profile could not be loaded."; profileLoading = false },
-                            )
+                        try {
+                            user.reload().await()
+                            val token = user.getIdToken(true).await()
+                            val verifiedPhone = token.claims["whatsapp_verified"] == true
+                                && (token.claims["whatsapp_number"] as? String)?.matches(Regex("^\\+923[0-9]{9}$")) == true
+                            if (!user.isEmailVerified) {
+                                currentUser = null
+                                pendingVerification = user
+                                needsWhatsAppVerification = false
+                                profileLoading = false
+                            } else if (!verifiedPhone) {
+                                patientProfile = null
+                                needsWhatsAppVerification = true
+                                profileLoading = false
+                            } else {
+                                needsWhatsAppVerification = false
+                                profiles.ensurePatientProfile(user) { result ->
+                                    result.fold(
+                                        onSuccess = { patientProfile = it; profileError = null; profileLoading = false },
+                                        onFailure = { patientProfile = null; profileError = it.message ?: "Your profile could not be loaded."; profileLoading = false },
+                                    )
+                                }
+                            }
+                        } catch (_: Exception) {
+                            patientProfile = null
+                            profileError = "Your account status could not be refreshed. Check your connection and retry."
+                            profileLoading = false
+                        }
+                    }
+                }
+
+                fun clearPhoneProof() {
+                    otpCode = ""
+                    otpSent = false
+                    otpProof = null
+                    otpMessage = null
+                    otpMessageIsError = false
+                }
+
+                fun requestWhatsAppCode() {
+                    if (!HomigoApiClient.isPakistaniMobileDigits(phoneDigits)) {
+                        otpMessage = "Enter exactly 10 Pakistani mobile digits beginning with 3."
+                        otpMessageIsError = true
+                        return
+                    }
+                    loading = true
+                    otpMessage = null
+                    lifecycleScope.launch {
+                        try {
+                            HomigoApiClient.sendWhatsAppOtp(phoneDigits)
+                            otpSent = true
+                            otpProof = null
+                            otpCode = ""
+                            otpMessage = "The HomiGo server confirmed the WhatsApp code request."
+                            otpMessageIsError = false
+                        } catch (error: Exception) {
+                            otpMessage = error.message ?: "The WhatsApp code could not be requested."
+                            otpMessageIsError = true
+                        } finally {
+                            loading = false
+                        }
+                    }
+                }
+
+                fun verifyWhatsAppCode() {
+                    loading = true
+                    otpMessage = null
+                    lifecycleScope.launch {
+                        try {
+                            otpProof = HomigoApiClient.verifyWhatsAppOtp(phoneDigits, otpCode)
+                            otpMessage = "The HomiGo server verified this code. Continue before the one-use proof expires."
+                            otpMessageIsError = false
+                        } catch (error: Exception) {
+                            otpProof = null
+                            otpMessage = error.message ?: "The WhatsApp code could not be verified."
+                            otpMessageIsError = true
+                        } finally {
+                            loading = false
+                        }
+                    }
+                }
+
+                fun linkWhatsAppToCurrentAccount() {
+                    val account = currentUser
+                    val proof = otpProof
+                    if (account == null || proof == null) {
+                        otpMessage = "Sign in and verify a WhatsApp code before linking."
+                        otpMessageIsError = true
+                        return
+                    }
+                    loading = true
+                    otpMessage = null
+                    lifecycleScope.launch {
+                        try {
+                            val idToken = account.getIdToken(true).await().token
+                                ?: throw IllegalStateException("The Firebase account token could not be refreshed.")
+                            HomigoApiClient.linkWhatsApp(proof.proof, idToken)
+                            val refreshed = account.getIdToken(true).await()
+                            val isVerified = refreshed.claims["whatsapp_verified"] == true
+                                && (refreshed.claims["whatsapp_number"] as? String)?.matches(Regex("^\\+923[0-9]{9}$")) == true
+                            if (!isVerified) throw IllegalStateException("The new WhatsApp claim could not be refreshed.")
+                            clearPhoneProof()
+                            needsWhatsAppVerification = false
+                            profileLoading = true
+                            profiles.ensurePatientProfile(account) { result ->
+                                result.fold(
+                                    onSuccess = { patientProfile = it; profileError = null; profileLoading = false },
+                                    onFailure = { patientProfile = null; profileError = it.message ?: "Your profile could not be loaded."; profileLoading = false },
+                                )
+                            }
+                        } catch (error: Exception) {
+                            otpMessage = error.message ?: "WhatsApp could not be linked securely."
+                            otpMessageIsError = true
+                        } finally {
+                            loading = false
                         }
                     }
                 }
@@ -107,12 +233,22 @@ class MainActivity : ComponentActivity() {
                     result.fold(
                         onSuccess = { user ->
                             password = ""
-                            message = null
-                            messageIsError = false
-                            pendingVerification = null
-                            patientProfile = null
-                            profileLoading = true
-                            currentUser = user
+                            if (AuthFlowPolicy.shouldRouteToVerificationAfterRegistration(signUp, user.isEmailVerified)) {
+                                currentUser = null
+                                pendingVerification = user
+                                patientProfile = null
+                                profileLoading = false
+                                profileError = null
+                                message = "Account created. Verify your email to continue. You can resend the link below."
+                                messageIsError = false
+                            } else {
+                                message = null
+                                messageIsError = false
+                                pendingVerification = null
+                                patientProfile = null
+                                profileLoading = true
+                                currentUser = user
+                            }
                         },
                         onFailure = { error ->
                             val session = auth.currentUser()
@@ -137,17 +273,44 @@ class MainActivity : ComponentActivity() {
                     patientProfile = null
                     profileError = null
                     profileLoading = false
+                    needsWhatsAppVerification = false
+                    showCareScreen = false
+                    phoneDigits = ""
+                    clearPhoneProof()
                     message = null
                     password = ""
                     isSignUp = false
+                    phoneLogin = false
                 }
 
                 when {
                     showSplash -> HomiGoSplashScreen()
                     currentUser != null && profileLoading -> LoadingScreen("Loading your secure profile…")
+                    currentUser != null && needsWhatsAppVerification -> WhatsAppLinkScreen(
+                        email = currentUser?.email.orEmpty(),
+                        phoneDigits = phoneDigits,
+                        otpCode = otpCode,
+                        sent = otpSent,
+                        proofReady = otpProof != null,
+                        busy = loading,
+                        message = otpMessage,
+                        messageIsError = otpMessageIsError,
+                        onPhoneChange = { value -> if (value != phoneDigits) { phoneDigits = value; clearPhoneProof() } },
+                        onCodeChange = { value -> otpCode = value; otpProof = null; otpMessage = null },
+                        onSend = ::requestWhatsAppCode,
+                        onVerify = ::verifyWhatsAppCode,
+                        onLink = ::linkWhatsAppToCurrentAccount,
+                        onSignOut = ::clearSession,
+                    )
+                    currentUser != null && showCareScreen && patientProfile != null -> PatientCareScreen(
+                        profile = patientProfile!!,
+                        repository = careRepository,
+                        onBack = { showCareScreen = false },
+                    )
                     currentUser != null && patientProfile != null -> HomeScreen(
                         profile = patientProfile!!,
                         onSignOut = ::clearSession,
+                        onOpenCare = { showCareScreen = true },
                         onEmergencyCall = { runCatching { startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:1122"))) } },
                     )
                     currentUser != null -> ProfileErrorScreen(
@@ -186,33 +349,91 @@ class MainActivity : ComponentActivity() {
                     )
                     else -> AuthScreen(
                         isSignUp = isSignUp,
+                        phoneLogin = phoneLogin,
                         name = name,
                         email = email,
                         password = password,
+                        phoneDigits = phoneDigits,
+                        otpCode = otpCode,
+                        otpSent = otpSent,
+                        otpProofReady = otpProof != null,
+                        otpMessage = otpMessage,
+                        otpMessageIsError = otpMessageIsError,
                         loading = loading,
                         message = message,
                         messageIsError = messageIsError,
                         onNameChange = { name = it; message = null; messageIsError = true },
                         onEmailChange = { email = it; message = null; messageIsError = true },
                         onPasswordChange = { password = it; message = null; messageIsError = true },
-                        onModeChange = { isSignUp = it; message = null; messageIsError = true },
+                        onPhoneDigitsChange = { value -> if (value != phoneDigits) { phoneDigits = value; clearPhoneProof() } },
+                        onOtpCodeChange = { value -> otpCode = value; otpProof = null; otpMessage = null },
+                        onSendOtp = ::requestWhatsAppCode,
+                        onVerifyOtp = ::verifyWhatsAppCode,
+                        onModeChange = { isSignUp = it; phoneLogin = false; message = null; messageIsError = true; clearPhoneProof() },
+                        onPhoneLoginChange = { phoneLogin = it; message = null; messageIsError = true },
                         onSubmit = {
-                            val validation = AuthFormValidator.validate(isSignUp, name, email, password)
+                            val validation = if (!isSignUp && phoneLogin) AuthFormValidator.validatePhoneLogin(phoneDigits, password)
+                            else AuthFormValidator.validate(isSignUp, name, email, password)
                             if (validation != null) {
                                 message = validation
                                 messageIsError = true
                                 return@AuthScreen
                             }
-                            loading = true
-                            message = null
-                            val callback: (Result<FirebaseUser>) -> Unit = { acceptAuthResult(it, isSignUp) }
-                            if (isSignUp) auth.createAccount(name, email, password, callback)
-                            else auth.signIn(email, password, callback)
+                            if (isSignUp) {
+                                val proof = otpProof
+                                if (proof == null) {
+                                    message = "Verify your WhatsApp number before creating this account."
+                                    messageIsError = true
+                                    return@AuthScreen
+                                }
+                                loading = true
+                                message = null
+                                lifecycleScope.launch {
+                                    try {
+                                        HomigoApiClient.registerVerifiedPatient(proof.proof, name, email, password)
+                                        clearPhoneProof()
+                                        auth.signInAfterServerRegistration(email, password) { result -> acceptAuthResult(result, true) }
+                                    } catch (error: Exception) {
+                                        loading = false
+                                        message = error.message ?: "The verified account could not be created."
+                                        messageIsError = true
+                                    }
+                                }
+                            } else {
+                                loading = true
+                                message = null
+                                if (phoneLogin) {
+                                    lifecycleScope.launch {
+                                        try {
+                                            val token = HomigoApiClient.signInWithPhonePassword(phoneDigits, password)
+                                            auth.signInWithCustomToken(token) { result -> acceptAuthResult(result, false) }
+                                        } catch (error: Exception) {
+                                            loading = false
+                                            message = error.message ?: "Phone sign-in could not be completed."
+                                            messageIsError = true
+                                        }
+                                    }
+                                } else {
+                                    auth.signIn(email, password) { result -> acceptAuthResult(result, false) }
+                                }
+                            }
                         },
                         onGoogleSignIn = {
+                            val signingUp = isSignUp
+                            val proofForGoogle = otpProof
+                            if (signingUp && proofForGoogle == null) {
+                                message = "Verify your WhatsApp number before continuing with Google registration."
+                                messageIsError = true
+                                return@AuthScreen
+                            }
                             loading = true
                             message = null
-                            val serverClientId = getString(R.string.default_web_client_id)
+                            // A missing/incorrect Firebase Google OAuth resource must produce a
+                            // recoverable UI error, not crash the Activity from the click handler.
+                            val serverClientId = runCatching { getString(R.string.default_web_client_id) }
+                                .getOrNull()
+                                .orEmpty()
+                                .trim()
                             if (serverClientId.isBlank()) {
                                 loading = false
                                 message = "Google sign-in is not configured in this build. Refresh the Firebase Android configuration and rebuild."
@@ -233,7 +454,31 @@ class MainActivity : ComponentActivity() {
                                             messageIsError = true
                                         } else {
                                             val token = GoogleIdTokenCredential.createFrom(credential.data).idToken
-                                            auth.signInWithGoogle(token) { result -> acceptAuthResult(result, false) }
+                                            auth.signInWithGoogle(token) { result ->
+                                                if (!signingUp || proofForGoogle == null) {
+                                                    acceptAuthResult(result, false)
+                                                } else {
+                                                    result.fold(
+                                                        onSuccess = { googleUser ->
+                                                            lifecycleScope.launch {
+                                                                try {
+                                                                    val idToken = googleUser.getIdToken(true).await().token
+                                                                        ?: throw IllegalStateException("The Firebase account token could not be refreshed.")
+                                                                    HomigoApiClient.linkWhatsApp(proofForGoogle.proof, idToken)
+                                                                    googleUser.getIdToken(true).await()
+                                                                    clearPhoneProof()
+                                                                    acceptAuthResult(Result.success(googleUser), false)
+                                                                } catch (error: Exception) {
+                                                                    acceptAuthResult(Result.success(googleUser), false)
+                                                                    message = error.message ?: "WhatsApp could not be linked securely."
+                                                                    messageIsError = true
+                                                                }
+                                                            }
+                                                        },
+                                                        onFailure = { error -> acceptAuthResult(Result.failure(error), false) },
+                                                    )
+                                                }
+                                            }
                                         }
                                     } catch (cancelled: GetCredentialCancellationException) {
                                         loading = false

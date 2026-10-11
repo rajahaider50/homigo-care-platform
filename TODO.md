@@ -2,7 +2,13 @@
 
 This is the project progress ledger. Do not mark a clause complete without the described evidence. Later milestones remain gated on explicit user approval.
 
-## Milestone 1 — first 25% (in progress)
+## Current snapshot — 2026-10-11
+
+M2 source work is on `fix/android-auth-registration-flow` / [PR #1](https://github.com/rajahaider50/homigo-care-platform/pull/1); this is not milestone acceptance. Workspace typecheck/lint/tests/build passed; API-origin and role-claim security fixes are local and covered by tests; Firestore Emulator is 16/16. The corrected rules have not been redeployed—the owner must review and approve the changed rules source. The debug APK builds, but its signer does not match the registered Firebase debug fingerprint and it has no API base URL. Separate Vercel Public/Admin projects for `homigo-care-platform` exist with Firebase client config; no deployment exists yet, and the default deployment SSO protection remains on. Real WhatsApp gateway credentials are absent.
+
+Do not deploy the public apps until the corrected Firestore rules have explicit owner approval and are deployed. Do not deploy the API without server-only secrets and real gateway settings. Do not claim live OTP, Google Sign-In on a physical device, real-provider booking, or 70% completion for any product. The compiled APK is debug-only and not Google Sign-In-ready. See [`NEXT_AI_HANDOFF_2026-10-11.md`](NEXT_AI_HANDOFF_2026-10-11.md). No Antigravity is authorized or used.
+
+## Milestone 1 — first 25% (historical baseline; see current snapshot)
 
 - [ ] Native Android project, official design system, correct navigation, auth screens, initial patient dashboard, basic profile flow, validation, loading/error/empty/success states.
 - [ ] Firebase Auth email/password with sign-up, verified-email gate/resend/reload, logout, password reset, Google sign-in using the registered Android OAuth fingerprints; do not store passwords in plaintext.
@@ -15,7 +21,7 @@ This is the project progress ledger. Do not mark a clause complete without the d
 - [ ] Preserve existing Firebase data, old repos/projects and supplied ZIP/PDF/assets. Never seed fake production records.
 - [ ] Report exact build/test/deployment artifacts, integrations actually working, blocked inputs, and required owner actions; then wait for approval before M2.
 
-## Milestone 2 — cumulative 50% (not started; approval-gated)
+## Milestone 2 — cumulative 50% (implementation in progress; not accepted)
 
 - [ ] Complete the working patient and professional authentication/onboarding paths, including Google sign-in and WhatsApp OTP only when the user's Java API sample and configuration are available.
 - [ ] Add real Doctor/Nurse discovery and professional profiles that show only approved professionals and accurate stored qualification/status/availability.

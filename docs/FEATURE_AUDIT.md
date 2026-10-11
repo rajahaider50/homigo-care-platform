@@ -1,6 +1,8 @@
 # Feature-by-feature implementation audit
 
-Status: **M1 in progress**. Requirements are distinguished from implemented code; no feature is marked complete without actual build/test or integration evidence.
+> Historical M1 snapshot dated 2026-10-10. Current M2 implementation, verification, and blockers are recorded in [`NEXT_AI_HANDOFF_2026-10-11.md`](../NEXT_AI_HANDOFF_2026-10-11.md) and [`PROJECT_HISTORY_AND_CONTINUATION.md`](../PROJECT_HISTORY_AND_CONTINUATION.md); those newer records supersede rows below wherever status differs.
+
+Status: **Historical M1 baseline**. Requirements are distinguished from implemented code; no feature is marked complete without actual build/test or integration evidence.
 
 | Required feature | Authoritative source | Existing state | Missing work / dependency | Acceptance evidence | Status |
 |---|---|---|---|---|---|
@@ -34,3 +36,8 @@ This check supersedes earlier GitHub-secret and Vercel-access statements above w
 This note supersedes older status rows wherever evidence differs. On source commit `e6249c9`, GitHub Actions run [38057851529](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38057851529) completed overall success. The Firestore Rules Emulator, Public Website checks, and Admin Panel checks all passed. The Android job validated the existing Firebase config but found no `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64`; it therefore skipped Android SDK setup, native build, signer verification, and artifact upload. The run uploaded **zero artifacts**. This confirms the fail-closed behavior; it does not provide a correct-signer APK.
 
 Current local checks also pass: Firestore Emulator **8/8** and Public/Admin typecheck, lint, tests, and production builds. Live Firebase Console confirms Google enabled, Email/Password disabled, and the registered development fingerprints match the local key; no real-device sign-in has been tested. Vercel still lists zero projects and no linked Git context; no replacement project or live URL was created. Firestore candidate rules remain undeployed and the last verified live policy remains deny-all. M1 remains open; current progress is Website **63%**, Admin **38%**, Android **50%**.
+
+## Android registration verification follow-up (2026-10-10)
+A focused source fix now routes a successful but unverified email/password registration to the existing verification screen rather than treating it as a fully signed-in user and attempting the verified-only profile flow. A missing `default_web_client_id` resource is also handled as a recoverable UI configuration error. `AuthFlowPolicy` has three regression unit tests. Local Android lint, `testDebugUnitTest` (6/6 across the current two test classes), and `assembleDebug` passed using a temporary compile-only Firebase config which was removed afterward. This is not a real Firebase config, registered-signer verification, Google OAuth test, or device/crash test. `adb devices -l` returned no attached device. Changes are on `fix/android-auth-registration-flow`, not yet merged to `fresh-rebuild`; await its CI/PR review before claiming branch-mainline status.
+
+GitHub PR [#1](https://github.com/rajahaider50/homigo-care-platform/pull/1) at `401ca65846d6bc8aa1189157b67e59fdca5a2f3b` is open (not merged). Hosted CI run [38065423373](https://github.com/rajahaider50/homigo-care-platform/actions/runs/38065423373) passed Web/Rules and Admin checks; the Android job completed in fail-closed mode but skipped SDK/native build/signer/artifact steps due missing `HOMIGO_DEV_DEBUG_KEYSTORE_BASE64`. No CI APK was uploaded.

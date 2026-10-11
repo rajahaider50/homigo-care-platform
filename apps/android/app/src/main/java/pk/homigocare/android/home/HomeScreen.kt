@@ -3,6 +3,7 @@ package pk.homigocare.android.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,14 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -35,8 +34,8 @@ import pk.homigocare.android.designsystem.icons.HgIconImage
 import pk.homigocare.android.designsystem.theme.HgColor
 import pk.homigocare.android.profile.PatientProfile
 
-@Composable
-fun HomeScreen(profile: PatientProfile, onSignOut: () -> Unit, onEmergencyCall: () -> Unit) {
+@androidx.compose.runtime.Composable
+fun HomeScreen(profile: PatientProfile, onSignOut: () -> Unit, onOpenCare: () -> Unit, onEmergencyCall: () -> Unit) {
     Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 24.dp),
@@ -65,15 +64,14 @@ fun HomeScreen(profile: PatientProfile, onSignOut: () -> Unit, onEmergencyCall: 
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 HgIconImage(HgIcon.SHIELD_CHECK, modifier = Modifier.size(20.dp), contentDescription = null, tint = HgColor.Success)
-                Text("Verified account · profile saved securely", style = MaterialTheme.typography.bodyMedium, color = HgColor.Green700)
+                Text("Email and WhatsApp verified · patient profile secured", style = MaterialTheme.typography.bodyMedium, color = HgColor.Green700)
             }
             Text("Your care dashboard", style = MaterialTheme.typography.headlineMedium, color = HgColor.TextPrimary)
-            DashboardCard(HgIcon.STETHOSCOPE, "Doctor", "Professional discovery will open in the next milestone.")
-            DashboardCard(HgIcon.HAND_HEART, "Nurse", "Home-nursing discovery will open in the next milestone.")
-            DashboardCard(HgIcon.PASSPORT, "Health Passport", "Secure patient-controlled records are planned for a later milestone.")
-            DashboardCard(HgIcon.SIREN, "SOS", "The in-app alert workflow is not active yet.", emergency = true)
+            DashboardCard(HgIcon.STETHOSCOPE, "Book a doctor or nurse", "Browse Admin-approved profiles and request a development home visit.", onClick = onOpenCare)
+            DashboardCard(HgIcon.PASSPORT, "Health Passport", "Patient-controlled health-record access is planned for a later milestone.")
+            DashboardCard(HgIcon.SIREN, "SOS", "No emergency-dispatch connection is active.", emergency = true)
             Text(
-                "This is a non-commercial demo. No providers, bookings, health records, or alerts are present until real connected workflows are added. For immediate help, use your local emergency service.",
+                "Development only. Booking requests are not clinical appointments until a professional accepts them. No production patient data or live responder alerts are supported.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -86,13 +84,15 @@ fun HomeScreen(profile: PatientProfile, onSignOut: () -> Unit, onEmergencyCall: 
     }
 }
 
-@Composable
-private fun DashboardCard(icon: HgIcon, title: String, subtitle: String, emergency: Boolean = false) {
+@androidx.compose.runtime.Composable
+private fun DashboardCard(icon: HgIcon, title: String, subtitle: String, emergency: Boolean = false, onClick: (() -> Unit)? = null) {
     val container = if (emergency) HgColor.Red50 else HgColor.White
     val iconSurface = if (emergency) HgColor.Red100 else HgColor.Teal50
     val iconTint = if (emergency) HgColor.Error else HgColor.Primary
     Card(
-        modifier = Modifier.fillMaxWidth().border(1.dp, if (emergency) HgColor.Red100 else HgColor.Border, MaterialTheme.shapes.medium),
+        modifier = Modifier.fillMaxWidth()
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
+            .border(1.dp, if (emergency) HgColor.Red100 else HgColor.Border, MaterialTheme.shapes.medium),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = container),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),

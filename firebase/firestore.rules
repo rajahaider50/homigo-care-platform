@@ -5,43 +5,194 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function verified() {
+    function emailVerified() {
       return signedIn() && request.auth.token.email_verified == true;
     }
 
-    function admin() {
-      return verified() && request.auth.token.admin == true;
+    function whatsappVerified() {
+      return emailVerified()
+        && request.auth.token.whatsapp_verified == true
+        && request.auth.token.whatsapp_number is string
+        && request.auth.token.whatsapp_number.matches('^\\+923[0-9]{9}$');
     }
 
-    function validNewPatientProfile(uid) {
+    function admin() {
+      return emailVerified() && request.auth.token.admin == true;
+    }
+
+    function profilePath(uid) {
+      return /databases/$(database)/documents/profiles/$(uid);
+    }
+
+    function professionalPath(uid) {
+      return /databases/$(database)/documents/professional_profiles/$(uid);
+    }
+
+    function profileRole(uid, expectedRole) {
+      return whatsappVerified()
+        && exists(profilePath(uid))
+        && get(profilePath(uid)).data.role == expectedRole;
+    }
+
+    function patient(uid) {
+      return profileRole(uid, 'patient');
+    }
+
+    function approvedProfessional(uid) {
+      return profileRole(uid, 'professional')
+        && exists(professionalPath(uid))
+        && get(professionalPath(uid)).data.status == 'approved';
+    }
+
+    function validPhone(value) {
+      return value is string && value.matches('^\\+923[0-9]{9}$');
+    }
+
+    function validNewProfile(uid) {
       return request.resource.data.keys().hasOnly([
-          'uid', 'email', 'displayName', 'role', 'createdAt', 'updatedAt'
+          'uid', 'email', 'displayName', 'role', 'phoneNumber', 'createdAt', 'updatedAt'
         ])
         && request.resource.data.keys().hasAll([
-          'uid', 'email', 'displayName', 'role', 'createdAt', 'updatedAt'
+          'uid', 'email', 'displayName', 'role', 'phoneNumber', 'createdAt', 'updatedAt'
         ])
         && request.resource.data.uid == uid
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.displayName is string
         && request.resource.data.displayName.size() >= 2
         && request.resource.data.displayName.size() <= 80
-        && request.resource.data.role == 'patient'
+        && request.auth.token.account_role in ['patient', 'professional']
+        && request.resource.data.role == request.auth.token.account_role
+        && validPhone(request.resource.data.phoneNumber)
+        && request.resource.data.phoneNumber == request.auth.token.whatsapp_number
         && request.resource.data.createdAt == request.time
         && request.resource.data.updatedAt == request.time;
     }
 
+    function validProfessionalDraft(uid) {
+      return request.resource.data.keys().hasOnly([
+          'uid', 'displayName', 'professionalType', 'specialty', 'qualification',
+          'experienceYears', 'city', 'availability', 'status', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'uid', 'displayName', 'professionalType', 'specialty', 'qualification',
+          'experienceYears', 'city', 'availability', 'status', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.uid == uid
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 2
+        && request.resource.data.displayName.size() <= 80
+        && request.resource.data.professionalType in ['doctor', 'nurse']
+        && request.resource.data.specialty is string
+        && request.resource.data.specialty.size() <= 80
+        && request.resource.data.qualification is string
+        && request.resource.data.qualification.size() >= 2
+        && request.resource.data.qualification.size() <= 120
+        && request.resource.data.experienceYears is int
+        && request.resource.data.experienceYears >= 0
+        && request.resource.data.experienceYears <= 60
+        && request.resource.data.city is string
+        && request.resource.data.city.size() >= 2
+        && request.resource.data.city.size() <= 80
+        && request.resource.data.availability is string
+        && request.resource.data.availability.size() <= 160
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    function validProfessionalSelfUpdate() {
+      return whatsappVerified()
+        && request.auth.uid == resource.data.uid
+        && profileRole(request.auth.uid, 'professional')
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName', 'specialty', 'qualification', 'experienceYears', 'city', 'availability', 'updatedAt'
+        ])
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.status == resource.data.status
+        && request.resource.data.professionalType == resource.data.professionalType
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 2
+        && request.resource.data.displayName.size() <= 80
+        && request.resource.data.specialty is string
+        && request.resource.data.specialty.size() <= 80
+        && request.resource.data.qualification is string
+        && request.resource.data.qualification.size() >= 2
+        && request.resource.data.qualification.size() <= 120
+        && request.resource.data.experienceYears is int
+        && request.resource.data.experienceYears >= 0
+        && request.resource.data.experienceYears <= 60
+        && request.resource.data.city is string
+        && request.resource.data.city.size() >= 2
+        && request.resource.data.city.size() <= 80
+        && request.resource.data.availability is string
+        && request.resource.data.availability.size() <= 160
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    function validAdminProfessionalReview() {
+      return admin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && request.resource.data.status in ['approved', 'rejected', 'suspended']
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    function validBookingCreate() {
+      let professional = get(professionalPath(request.resource.data.professionalUid)).data;
+      return whatsappVerified()
+        && patient(request.auth.uid)
+        && request.resource.data.keys().hasOnly([
+          'patientUid', 'professionalUid', 'serviceType', 'scheduledAt', 'address', 'status', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'patientUid', 'professionalUid', 'serviceType', 'scheduledAt', 'address', 'status', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.patientUid == request.auth.uid
+        && request.resource.data.professionalUid is string
+        && professional.status == 'approved'
+        && ((professional.professionalType == 'doctor' && request.resource.data.serviceType == 'doctor_visit')
+          || (professional.professionalType == 'nurse' && request.resource.data.serviceType == 'nurse_visit'))
+        && request.resource.data.scheduledAt is timestamp
+        && request.resource.data.scheduledAt > request.time
+        && request.resource.data.address is string
+        && request.resource.data.address.size() >= 10
+        && request.resource.data.address.size() <= 250
+        && request.resource.data.status == 'requested'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    function validPatientCancellation() {
+      return whatsappVerified()
+        && patient(request.auth.uid)
+        && resource.data.patientUid == request.auth.uid
+        && resource.data.status in ['requested', 'accepted']
+        && request.resource.data.status == 'cancelled'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    function validProfessionalTransition() {
+      return approvedProfessional(request.auth.uid)
+        && resource.data.professionalUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && request.resource.data.updatedAt == request.time
+        && ((resource.data.status == 'requested' && request.resource.data.status in ['accepted', 'declined'])
+          || (resource.data.status == 'accepted' && request.resource.data.status == 'completed'));
+    }
+
     match /profiles/{uid} {
-      allow get: if verified() && (request.auth.uid == uid || admin());
+      allow get: if admin() || (whatsappVerified() && request.auth.uid == uid);
       allow list: if admin() && request.query.limit != null && request.query.limit <= 100;
-      allow create: if verified() && request.auth.uid == uid && validNewPatientProfile(uid);
-      allow update: if verified()
+      allow create: if whatsappVerified() && request.auth.uid == uid && validNewProfile(uid);
+      allow update: if whatsappVerified()
         && request.auth.uid == uid
         && request.resource.data.keys().hasOnly([
-          'uid', 'email', 'displayName', 'role', 'createdAt', 'updatedAt'
+          'uid', 'email', 'displayName', 'role', 'phoneNumber', 'createdAt', 'updatedAt'
         ])
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.email == resource.data.email
         && request.resource.data.role == resource.data.role
+        && request.resource.data.phoneNumber == resource.data.phoneNumber
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.displayName is string
         && request.resource.data.displayName.size() >= 2
@@ -51,6 +202,39 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    match /professional_profiles/{uid} {
+      allow get: if admin()
+        || (whatsappVerified() && request.auth.uid == uid)
+        || (patient(request.auth.uid) && resource.data.status == 'approved');
+      allow list: if (admin() && request.query.limit != null && request.query.limit <= 100)
+        || (patient(request.auth.uid) && request.query.limit != null && request.query.limit <= 50 && resource.data.status == 'approved')
+        || (profileRole(request.auth.uid, 'professional') && request.auth.uid == resource.data.uid && request.query.limit != null && request.query.limit <= 20);
+      allow create: if whatsappVerified()
+        && request.auth.uid == uid
+        && profileRole(uid, 'professional')
+        && validProfessionalDraft(uid);
+      allow update: if validProfessionalSelfUpdate() || validAdminProfessionalReview();
+      allow delete: if false;
+    }
+
+    match /bookings/{bookingId} {
+      allow get: if admin()
+        || (patient(request.auth.uid) && resource.data.patientUid == request.auth.uid)
+        || (approvedProfessional(request.auth.uid) && resource.data.professionalUid == request.auth.uid);
+      allow list: if (admin() && request.query.limit != null && request.query.limit <= 100)
+        || (patient(request.auth.uid) && resource.data.patientUid == request.auth.uid && request.query.limit != null && request.query.limit <= 50)
+        || (approvedProfessional(request.auth.uid) && resource.data.professionalUid == request.auth.uid && request.query.limit != null && request.query.limit <= 50);
+      allow create: if validBookingCreate();
+      allow update: if validPatientCancellation() || validProfessionalTransition();
+      allow delete: if false;
+    }
+
+    // Server-only collections; the backend uses Firebase Admin and client access is denied.
+    match /system_settings/{document=**} { allow read, write: if false; }
+    match /otp_attempts/{document=**} { allow read, write: if false; }
+    match /whatsapp_proofs/{document=**} { allow read, write: if false; }
+
+    // Health records, payment proofs, SOS, and all unlisted collections remain denied by default.
     match /{document=**} { allow read, write: if false; }
   }
 }

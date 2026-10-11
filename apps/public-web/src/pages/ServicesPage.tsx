@@ -2,17 +2,17 @@ import { Link } from "react-router-dom";
 import { BrandIcon } from "../components/BrandIcon";
 
 const items = [
-  { icon: "user-medical" as const, title: "Doctor and nurse visits", availability: "Not live yet", tone: "muted", description: "Professional verification, care discovery and booking are being built for a later milestone. No professional availability or appointment is represented by this demo." },
-  { icon: "passport" as const, title: "Health Passport", availability: "Not live yet", tone: "muted", description: "Patient-controlled health-record access is planned for a later milestone. Do not upload medical or identity documents to this public demo." },
+  { icon: "user-medical" as const, title: "Doctor and nurse visits", availability: "M2 · dev workflow built", tone: "active", description: "Approved-provider discovery, future-dated booking requests, patient cancellation, professional response states, and bounded Admin review are implemented. The dev Firestore rules are deployed; a provider appears only after Admin approval." },
+  { icon: "passport" as const, title: "Health Passport", availability: "Not in this milestone", tone: "muted", description: "Patient-controlled medical-record upload and access are not implemented. Do not upload medical or identity documents to this staging project." },
   { icon: "siren" as const, title: "SOS support", availability: "Not connected to responders", tone: "warning", description: "The demo does not dispatch emergency services. For emergencies, contact local emergency services directly." },
-  { icon: "lock" as const, title: "Secure patient account", availability: "M1 foundation", tone: "active", description: "Firebase email/password and Google sign-in options are available. Email verification is required before a minimal patient profile can be created." },
+  { icon: "lock" as const, title: "Secure patient account", availability: "OTP-gated source flow", tone: "active", description: "The server adapter now requires an explicit gateway verification result and a one-use Firebase-backed proof before account creation or phone linking. Live use still needs gateway and least-privilege Firebase Admin configuration." },
 ];
 
 export function ServicesPage() {
   return (
     <>
       <section className="page-hero page-container">
-        <div className="page-hero-copy"><p className="eyebrow">SERVICE OVERVIEW · DEMO STATUS</p><h1>Know what’s ready—and what isn’t.</h1><p>HomiGo Care is being built in stages. These labels describe the current M1 demo, not a promise of availability.</p></div>
+        <div className="page-hero-copy"><p className="eyebrow">SERVICE OVERVIEW · DEVELOPMENT</p><h1>Know what’s built—and what still needs setup.</h1><p>These labels reflect tested source behavior, local emulator checks, and the current external-service blockers. They are not a promise of clinical availability.</p></div>
         <div className="page-hero-symbol"><img src="/logos/homigo_mark.png" alt="" aria-hidden="true" /></div>
       </section>
       <section className="service-status-section page-container">
@@ -25,8 +25,8 @@ export function ServicesPage() {
             </article>
           ))}
         </div>
-        <aside className="service-disclaimer"><BrandIcon name="info" size={22} /><p><strong>Demo boundaries</strong><br />This website is a non-commercial staging demo. It is not a clinical service and does not store health records, create bookings, or notify emergency responders.</p></aside>
-        <div className="service-cta"><div><h2>Start with secure access.</h2><p>Test the real Firebase account and verification flow.</p></div><Link className="button button-primary" to="/auth">Patient access <BrandIcon name="arrow-right" size={18} /></Link></div>
+        <aside className="service-disclaimer"><BrandIcon name="info" size={22} /><p><strong>Development boundaries</strong><br />This is a development project, not a clinical service. No emergency dispatch, health records, payment capture, or production patient data are supported. Booking writes use the deployed rules in the selected Firebase development project; new registration still awaits live WhatsApp gateway configuration.</p></aside>
+        <div className="service-cta"><div><h2>Try the patient workflow.</h2><p>Sign in with a verified patient account to browse approved providers and create a development booking request.</p></div><Link className="button button-primary" to="/care">Open My Care <BrandIcon name="arrow-right" size={18} /></Link></div>
       </section>
     </>
   );
