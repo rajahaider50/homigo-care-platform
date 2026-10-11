@@ -43,4 +43,6 @@ These are implementation estimates, not a claim that every MVP feature is comple
 - Current local debug SHA-1 and SHA-256 are registered alongside the existing development fingerprints.
 - APK `0.3.1` built successfully with the refreshed Firebase config.
 - Android OTP client sends the accepted 10-digit number format and parses the API's `{verified: true, proof, number}` response; the backend gateway success-shape fix is deployed.
+- Android Google error 16 handling now retries with the explicit Sign-in-with-Google Credential Manager option when One Tap is disabled by the user/device.
+- Public web OTP readiness and API calls now fall back to the public HomiGo API URL if Vercel fails to inject `VITE_HOMIGO_API_BASE_URL` into a static build; no secret is embedded.
 - Real-device Google/OTP smoke testing still requires the APK to be installed on a device with Google Play services. No physical device is attached to this sandbox.

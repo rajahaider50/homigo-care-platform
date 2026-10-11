@@ -23,6 +23,7 @@ import { linkVerifiedWhatsApp, registerVerifiedAccount, requestWhatsAppOtp, sign
 type FormMode = "sign-in" | "sign-up" | "reset";
 type Notice = { tone: "info" | "success" | "error"; text: string };
 type OtpServiceStatus = "checking" | "ready" | "configuration_required" | "unavailable";
+const DEFAULT_HOMIGO_API_BASE_URL = "https://homigo-care-api-rajahaider50.vercel.app";
 
 function actionSettings(continuePath: string) {
   return { url: new URL(continuePath, window.location.origin).toString(), handleCodeInApp: false };
@@ -61,11 +62,7 @@ export function AuthPage({ initialMode = "sign-in" }: { initialMode?: "sign-in" 
   }, [location.search]);
 
   useEffect(() => {
-    const base = import.meta.env.VITE_HOMIGO_API_BASE_URL?.trim();
-    if (!base) {
-      setOtpServiceStatus("configuration_required");
-      return;
-    }
+    const base = import.meta.env.VITE_HOMIGO_API_BASE_URL?.trim() || DEFAULT_HOMIGO_API_BASE_URL;
     let active = true;
     fetch(`${base.replace(/\/+$/, "")}/api/health`, { cache: "no-store", signal: AbortSignal.timeout(5_000) })
       .then(async (response) => {

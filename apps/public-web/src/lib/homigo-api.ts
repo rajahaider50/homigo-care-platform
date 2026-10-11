@@ -2,10 +2,10 @@ import { getIdToken, type User } from "firebase/auth";
 
 export type OtpProof = { proof: string; number: string };
 type ApiMessage = { error?: unknown; sent?: unknown; verified?: unknown; proof?: unknown; number?: unknown; created?: unknown; linked?: unknown; uid?: unknown; role?: unknown; signedIn?: unknown; customToken?: unknown };
+const DEFAULT_HOMIGO_API_BASE_URL = "https://homigo-care-api-rajahaider50.vercel.app";
 
 function apiUrl(path: string): string {
-  const base = import.meta.env.VITE_HOMIGO_API_BASE_URL?.trim();
-  if (!base) throw new Error("The secure HomiGo API URL is not configured for this website.");
+  const base = import.meta.env.VITE_HOMIGO_API_BASE_URL?.trim() || DEFAULT_HOMIGO_API_BASE_URL;
   return `${base.replace(/\/+$/, "")}/api/${path.replace(/^\/+/, "")}`;
 }
 

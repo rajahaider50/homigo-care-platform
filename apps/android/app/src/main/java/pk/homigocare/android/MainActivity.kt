@@ -39,6 +39,7 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -446,7 +447,19 @@ class MainActivity : ComponentActivity() {
                                 val request = GetCredentialRequest.Builder().addCredentialOption(option).build()
                                 lifecycleScope.launch {
                                     try {
-                                        val response = CredentialManager.create(this@MainActivity).getCredential(this@MainActivity, request)
+                                        val credentialManager = CredentialManager.create(this@MainActivity)
+                                        val response = try {
+                                            credentialManager.getCredential(this@MainActivity, request)
+                                        } catch (error: Exception) {
+                                            // Some devices return One Tap error 16 when the user has
+                                            // disabled that feature. Use the explicit Google sign-in
+                                            // option instead of treating this as a network failure.
+                                            val detail = error.message.orEmpty().lowercase()
+                                            if (!detail.contains("16") && !detail.contains("disabled the feature")) throw error
+                                            val fallbackOption = GetSignInWithGoogleOption(serverClientId, null, null)
+                                            val fallbackRequest = GetCredentialRequest.Builder().addCredentialOption(fallbackOption).build()
+                                            credentialManager.getCredential(this@MainActivity, fallbackRequest)
+                                        }
                                         val credential = response.credential
                                         if (credential !is CustomCredential || credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                                             loading = false
